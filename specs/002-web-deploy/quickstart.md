@@ -20,8 +20,8 @@ For each environment, define these variables (Settings → Environments → `<en
 | Variable | Example (`dev`) | Example (`qa`) | Example (`prod`) |
 |---|---|---|---|
 | `ENVIRONMENT` | `dev` | `qa` | `prod` |
-| `APP_NAME` | `aigenius4` | `aigenius4` | `aigenius4` |
-| `VITE_API_URL` | `https://aigenius4-api-dev.azurewebsites.net` | `https://aigenius4-api-qa.azurewebsites.net` | `https://aigenius4-api-prod.azurewebsites.net` |
+| `APP_NAME` | `sampleapp4` | `sampleapp4` | `sampleapp4` |
+| `VITE_API_URL` | `https://sampleapp4-api-dev.azurewebsites.net` | `https://sampleapp4-api-qa.azurewebsites.net` | `https://sampleapp4-api-prod.azurewebsites.net` |
 
 Optionally add **required reviewers** on the `prod` environment for approval gates.
 
@@ -58,7 +58,7 @@ The workflow runs against the `dev` environment by default.
 Before pushing, verify the build still succeeds locally:
 
 ```bash
-cd src/ai-genius-web
+cd src/app-web
 npm ci
 npm run build
 ```

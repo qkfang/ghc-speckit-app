@@ -27,9 +27,9 @@
 
 **⚠️ CRITICAL**: The `infra` job will fail immediately with a file-not-found error if any parameter file is missing before any Azure resource is mutated (data-model.md guarantee G5, FR-014).
 
-- [X] T003 [P] Create `bicep/parameters.dev.json` — ARM schema `https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#`, parameters: `appName=aigenius`, `environment=dev`, `appServicePlanSku=B1`, `staticWebAppSku=Free`
-- [X] T004 [P] Create `bicep/parameters.qa.json` — ARM schema `https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#`, parameters: `appName=aigenius`, `environment=qa`, `appServicePlanSku=B1`, `staticWebAppSku=Free`
-- [X] T005 [P] Create `bicep/parameters.prod.json` — ARM schema `https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#`, parameters: `appName=aigenius`, `environment=prod`, `appServicePlanSku=B2`, `staticWebAppSku=Standard`
+- [X] T003 [P] Create `bicep/parameters.dev.json` — ARM schema `https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#`, parameters: `appName=sampleapp`, `environment=dev`, `appServicePlanSku=B1`, `staticWebAppSku=Free`
+- [X] T004 [P] Create `bicep/parameters.qa.json` — ARM schema `https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#`, parameters: `appName=sampleapp`, `environment=qa`, `appServicePlanSku=B1`, `staticWebAppSku=Free`
+- [X] T005 [P] Create `bicep/parameters.prod.json` — ARM schema `https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#`, parameters: `appName=sampleapp`, `environment=prod`, `appServicePlanSku=B2`, `staticWebAppSku=Standard`
 
 **Checkpoint**: All three parameter files exist — the `infra` job can now select the correct file at runtime via `bicep/parameters.$ENV_SHORT.json`.
 
@@ -39,12 +39,12 @@
 
 **Goal**: Every push to `main` automatically triggers the pipeline, authenticates to Azure via OIDC (no stored secrets), creates or verifies the resource group, deploys `bicep/main.bicep`, and emits `app-service-name` and `static-web-app-token` as job outputs for downstream jobs.
 
-**Independent Test**: Push an empty commit (`git commit --allow-empty -m "chore: trigger infra deploy" && git push origin main`), wait for the Actions run to complete, then verify in the Azure portal that `rg-aigenius-dev` contains App Service Plan + Web App + Static Web App with correct tags, and that the workflow run shows non-empty values for both job outputs.
+**Independent Test**: Push an empty commit (`git commit --allow-empty -m "chore: trigger infra deploy" && git push origin main`), wait for the Actions run to complete, then verify in the Azure portal that `rg-sampleapp-dev` contains App Service Plan + Web App + Static Web App with correct tags, and that the workflow run shows non-empty values for both job outputs.
 
-- [X] T006 [US1] Create `.github/workflows/deploy-infra.yml` — `name: Deploy Infrastructure to Azure`, `on: push: branches: [main]`, `concurrency: {group: "deploy-${{ github.ref }}", cancel-in-progress: true}`, `env: {APP_NAME: aigenius, AZURE_LOCATION: eastus2}`
+- [X] T006 [US1] Create `.github/workflows/deploy-infra.yml` — `name: Deploy Infrastructure to Azure`, `on: push: branches: [main]`, `concurrency: {group: "deploy-${{ github.ref }}", cancel-in-progress: true}`, `env: {APP_NAME: sampleapp, AZURE_LOCATION: eastus2}`
 - [X] T007 [US1] Add `infra` job skeleton to `.github/workflows/deploy-infra.yml` — `runs-on: ubuntu-latest`, `permissions: {id-token: write, contents: read}`, `outputs` block declaring `app-service-name: ${{ steps.capture-outputs.outputs.app-service-name }}` and `static-web-app-token: ${{ steps.capture-outputs.outputs.static-web-app-token }}`
 - [X] T008 [US1] Add `checkout` step (`uses: actions/checkout@v4`) and `azure-login` step (`uses: azure/login@v2` with `client-id: ${{ secrets.AZURE_CLIENT_ID }}`, `tenant-id: ${{ secrets.AZURE_TENANT_ID }}`, `subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}`) to `infra` job in `.github/workflows/deploy-infra.yml`
-- [X] T009 [US1] Add `env-map` step (id: `env-map`) to `infra` job in `.github/workflows/deploy-infra.yml` — bash `case` on `${{ github.event.inputs.environment || 'development' }}` mapping `development→dev`, `staging→qa`, `production→prod`; `else` branch exits non-zero; writes `env_short`, `resource_group` (`rg-aigenius-$env_short`), and `param_file` (`bicep/parameters.$env_short.json`) to `$GITHUB_OUTPUT`
+- [X] T009 [US1] Add `env-map` step (id: `env-map`) to `infra` job in `.github/workflows/deploy-infra.yml` — bash `case` on `${{ github.event.inputs.environment || 'development' }}` mapping `development→dev`, `staging→qa`, `production→prod`; `else` branch exits non-zero; writes `env_short`, `resource_group` (`rg-sampleapp-$env_short`), and `param_file` (`bicep/parameters.$env_short.json`) to `$GITHUB_OUTPUT`
 - [X] T010 [US1] Add `create-rg` step to `infra` job in `.github/workflows/deploy-infra.yml` — `az group create --name ${{ steps.env-map.outputs.resource_group }} --location ${{ env.AZURE_LOCATION }}`
 - [X] T011 [US1] Add `deploy-bicep` step to `infra` job in `.github/workflows/deploy-infra.yml` — `az deployment group create --name main-deploy --resource-group ${{ steps.env-map.outputs.resource_group }} --template-file bicep/main.bicep --parameters @${{ steps.env-map.outputs.param_file }}`
 - [X] T012 [US1] Add `capture-outputs` step (id: `capture-outputs`) to `infra` job in `.github/workflows/deploy-infra.yml` — query `az deployment group show --name main-deploy --resource-group ... --query properties.outputs.nodeAppHostname.value --output tsv` and `staticWebAppToken.value`; write `app-service-name` and `static-web-app-token` to `$GITHUB_OUTPUT`
@@ -59,7 +59,7 @@
 
 **Goal**: Operators can re-deploy or recover infrastructure on demand (any environment) from the GitHub Actions UI without pushing a commit.
 
-**Independent Test**: Navigate to **Actions → Deploy Infrastructure to Azure → Run workflow**, select `staging`, click **Run workflow** — verify `rg-aigenius-qa` is provisioned or updated with correct resources and tags, without a code change.
+**Independent Test**: Navigate to **Actions → Deploy Infrastructure to Azure → Run workflow**, select `staging`, click **Run workflow** — verify `rg-sampleapp-qa` is provisioned or updated with correct resources and tags, without a code change.
 
 - [X] T015 [US2] Add `workflow_dispatch` trigger to the `on:` block in `.github/workflows/deploy-infra.yml` — `inputs.environment`: `type: choice`, `description: Target deployment environment`, `default: development`, `options: [development, staging, production]`
 
@@ -71,7 +71,7 @@
 
 **Goal**: Every Azure resource provisioned by any pipeline run (App Service Plan, Web App, Static Web App) carries `app`, `environment`, and `managedBy=bicep` tags with correct values.
 
-**Independent Test**: After a successful pipeline run (`dev`), run `az resource list --resource-group rg-aigenius-dev --query "[?tags.managedBy == 'bicep'].{name:name, env:tags.environment}" --output table` and confirm all three resources appear with non-empty `env` values.
+**Independent Test**: After a successful pipeline run (`dev`), run `az resource list --resource-group rg-sampleapp-dev --query "[?tags.managedBy == 'bicep'].{name:name, env:tags.environment}" --output table` and confirm all three resources appear with non-empty `env` values.
 
 - [X] T016 [P] [US3] Audit `bicep/modules/webapp.bicep` — verify or add `app`, `environment`, and `managedBy` tag declarations on both the App Service Plan resource and the Web App resource; tag values must reference the corresponding Bicep parameters
 - [X] T017 [P] [US3] Audit `bicep/modules/staticwebapp.bicep` — verify or add `app`, `environment`, and `managedBy` tag declarations on the Static Web App resource; tag values must reference the corresponding Bicep parameters
@@ -84,7 +84,7 @@
 ## Final Phase: Polish & Cross-Cutting Concerns
 
 - [X] T019 [P] Validate `.github/workflows/deploy-infra.yml` end-to-end — confirm `concurrency` block is at workflow level (not job level), all three `secrets.*` references match required names (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`), step id `env-map` and `capture-outputs` match output references in job `outputs` block, and both `deploy-api`/`deploy-web` carry `needs: [infra]`
-- [X] T020 [P] Run pre-flight Bicep validation — `az deployment group what-if --resource-group rg-aigenius-dev --template-file bicep/main.bicep --parameters @bicep/parameters.dev.json` — confirm template syntax and parameter file are compatible before the first push to `main`
+- [X] T020 [P] Run pre-flight Bicep validation — `az deployment group what-if --resource-group rg-sampleapp-dev --template-file bicep/main.bicep --parameters @bicep/parameters.dev.json` — confirm template syntax and parameter file are compatible before the first push to `main`
 
 ---
 

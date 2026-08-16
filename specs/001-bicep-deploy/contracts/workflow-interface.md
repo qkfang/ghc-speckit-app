@@ -68,7 +68,7 @@ jobs:
 
 | Variable | Value | Description |
 |----------|-------|-------------|
-| `APP_NAME` | `aigenius` | Base name used to derive Azure resource names |
+| `APP_NAME` | `sampleapp` | Base name used to derive Azure resource names |
 | `AZURE_LOCATION` | `eastus2` | Azure region for resource group and resources |
 
 *Derived at runtime (set in `env-map` step)*:
@@ -76,7 +76,7 @@ jobs:
 | Variable | Derived from | Example |
 |----------|-------------|---------|
 | `ENV_SHORT` | `EnvironmentMapping` | `dev` |
-| `AZURE_RESOURCE_GROUP` | `rg-aigenius-$ENV_SHORT` | `rg-aigenius-dev` |
+| `AZURE_RESOURCE_GROUP` | `rg-sampleapp-$ENV_SHORT` | `rg-sampleapp-dev` |
 | `PARAM_FILE` | `bicep/parameters.$ENV_SHORT.json` | `bicep/parameters.dev.json` |
 
 ---

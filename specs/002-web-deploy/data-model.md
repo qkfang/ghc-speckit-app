@@ -42,10 +42,10 @@ This feature is a CI/CD pipeline; "entities" are workflow configuration objects 
 
 | Field | Value |
 |---|---|
-| Source path | `src/ai-genius-web` |
+| Source path | `src/app-web` |
 | Build command | `npm ci && npm run build` |
-| Output path | `src/ai-genius-web/dist` |
-| Action `app_location` | `src/ai-genius-web/dist` |
+| Output path | `src/app-web/dist` |
+| Action `app_location` | `src/app-web/dist` |
 | Action `output_location` | `""` (already built) |
 | Action `skip_app_build` | `true` |
 

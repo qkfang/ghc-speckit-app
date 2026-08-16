@@ -1,4 +1,4 @@
-# AI Genius: Season 4 Episode 2 
+# Sample App: Season 4 Episode 2 
 
 ## Spec-Kit with GitHub Copilot
 
@@ -32,19 +32,19 @@ Refer to `GitHub Actions Settings` section inside `AGENTS.md` to create GitHub r
 
 > **Agenda:** Overview of the frontend and API apps that will be deployed during this session.
 
-This session uses the **AI Genius** demo app — a full-stack web application consisting of two components:
+This session uses the **Sample App** demo app — a full-stack web application consisting of two components:
 
-### React Frontend (`src/ai-genius-web`)
+### React Frontend (`src/app-web`)
 
-A React 18 + Vite single-page application that displays Microsoft AI Genius series episodes. It fetches episode data from the backend API and renders them as interactive cards.
+A React 18 + Vite single-page application that displays Microsoft Sample App series episodes. It fetches episode data from the backend API and renders them as interactive cards.
 
-![Microsoft AI Genius web app](res/web-app.png)
+![Microsoft Sample App web app](res/web-app.png)
 
-### .NET API Backend (`src/ai-genius-api`)
+### .NET API Backend (`src/app-api`)
 
 A .NET 9 minimal API that serves episode and series metadata. It exposes a set of REST endpoints consumed by the frontend and includes a built-in Swagger UI for exploration. Swagger endpoint `http://localhost:5151/swagger/index.html`.
 
-![AI Genius API](res/web-api.png)
+![Sample App API](res/web-api.png)
 
 | Endpoint | Description |
 |----------|-------------|
@@ -148,7 +148,7 @@ Selected `Claude Sonnect 4.5` model.
 ```
 /speckit.constitution 
 
-This project is the AI Genius web application. It consists of a .net API backend and a React frontend.
+This project is the Sample App web application. It consists of a .net API backend and a React frontend.
 
 Core principles:
 - Security-first: HTTPS only, no secrets in code.
@@ -194,7 +194,7 @@ For reference, this spec was bootstrapped with the following commands:
 ```
 /speckit.specify 
 
-Add Bicep infrastructure-as-code CI/CD to the AI Genius project.
+Add Bicep infrastructure-as-code CI/CD to the Sample App project.
 Create a GitHub Actions workflow (.github/workflows/deploy-infra.yml) that:
 
 1. Triggers on every push to main (or manually via workflow_dispatch).
@@ -216,7 +216,7 @@ The Bicep modules are:
   - bicep/modules/webapp.bicep: App Service Plan + .Net Web App
   - bicep/modules/staticwebapp.bicep: Static Web App
 
-Parameters: appName (default: aigenius), environment (dev/qa/prod), appServicePlanSku (default: B1), staticWebAppSku (default: Free).
+Parameters: appName (default: sampleapp), environment (dev/qa/prod), appServicePlanSku (default: B1), staticWebAppSku (default: Free).
 ```
 
 You can also explore below commands.
@@ -231,7 +231,7 @@ You can also explore below commands.
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `appName` | `aigenius` | Base name for all Azure resources |
+| `appName` | `sampleapp` | Base name for all Azure resources |
 | `location` | resource group location | Azure region |
 | `environment` | `development` | `dev`, `qa`, or `prod` |
 | `appServicePlanSku` | `B1` | App Service Plan SKU (`F1`, `B1`, `B2`, `S1`) |
@@ -240,8 +240,8 @@ You can also explore below commands.
 | Resource | Bicep module | Purpose |
 |----------|-------------|---------|
 | Azure App Service Plan (Linux B1) | `modules/webapp.bicep` | Compute plan for the API |
-| Azure App Service | `modules/webapp.bicep` | Hosts `src/ai-genius-api` |
-| Azure Static Web App | `modules/staticwebapp.bicep` | Hosts built `src/ai-genius-web` |
+| Azure App Service | `modules/webapp.bicep` | Hosts `src/app-api` |
+| Azure Static Web App | `modules/staticwebapp.bicep` | Hosts built `src/app-web` |
 
 ---
 
@@ -274,7 +274,7 @@ Spec-Kit will:
 ```
 /speckit.specify 
 
-Deploy the AI Genius React frontend web app via GitHub Actions. The frontend is a React + Vite application in src/ai-genius-web.
+Deploy the Sample App React frontend web app via GitHub Actions. The frontend is a React + Vite application in src/app-web.
 
 - The new GitHub Actions workflow is called `002-deploy-web.yml` that:
 - Follow the ENVIRONMENT & concurrency like `001-deploy-infra.yml`
@@ -310,7 +310,7 @@ Use the `Clarify` button suggested by `GitHub Copilot` to continue the flow, ans
 ```
 /speckit.clarify 
 
-The frontend is a React 18 + Vite app in `src/ai-genius-web`. Resolve all [NEEDS CLARIFICATION] markers in the spec.
+The frontend is a React 18 + Vite app in `src/app-web`. Resolve all [NEEDS CLARIFICATION] markers in the spec.
 
 - The build output goes to `dist/`
 - The Azure Static Web App deployment uses: `Azure/static-web-apps-deploy@v1` action
@@ -347,7 +347,7 @@ Review `specs/002-web-deploy/spec.md` after each clarify pass to confirm the
 ```
 /speckit.plan
 
-One week sprint for React 18 app built with Vite in `src/ai-genius-web`.
+One week sprint for React 18 app built with Vite in `src/app-web`.
 
 ```
 
@@ -469,7 +469,7 @@ Raise a PR for the branch and merge to main.
 Expected:
 ✅ Workflow completes with all steps green
 ✅ Static Web App URL is reachable
-✅ Frontend renders the AI Genius application
+✅ Frontend renders the Sample App application
 ```
 
 If any step fails, check the workflow logs for errors and fix before proceeding.
@@ -492,7 +492,7 @@ Please run below steps one by one, and provide response automatically. Don't ove
 Step 1: 
 /speckit.specify 
 
-Deploy the AI Genius backend API via GitHub Actions. The backend is a .NET API in `src/ai-genius-api`. 
+Deploy the Sample App backend API via GitHub Actions. The backend is a .NET API in `src/app-api`. 
 
 - New GitHub Actions workflow (.github/workflows/003-deploy-api.yml)
 - Follow the ENVIRONMENT & concurrency like `001-deploy-infra.yml`
@@ -558,7 +558,7 @@ Please run below steps one by one, and provide response automatically. Don't ove
 Step 1: 
 /speckit.specify 
 
-Setup multiple environment deployment for bicep with approvals to the AI Genius CI/CD infra pipeline. Update the GitHub Actions workflows to include:
+Setup multiple environment deployment for bicep with approvals to the Sample App CI/CD infra pipeline. Update the GitHub Actions workflows to include:
 
 - New workflow (.github/workflows/004-multi-env-cicd.yml) that runs on every pull request to main 
 - Follow the ENVIRONMENT & concurrency like `001-deploy-infra.yml`
@@ -617,4 +617,4 @@ Every decision - from auth to environment tiers to reviewer counts - lives in th
 
 ---
 
-*AI Genius - Season 4, Episode 2 · Spec-Kit with GitHub Copilot*
+*Sample App - Season 4, Episode 2 · Spec-Kit with GitHub Copilot*

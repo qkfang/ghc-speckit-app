@@ -5,7 +5,7 @@ targetScope = 'resourceGroup'
 @description('Base name used to derive all resource names.')
 @minLength(3)
 @maxLength(20)
-param appName string = 'aigenius'
+param appName string = 'sampleapp'
 
 @description('Azure region for all resources.')
 param location string = resourceGroup().location

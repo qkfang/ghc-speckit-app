@@ -27,8 +27,8 @@ permissions:
 
 **Azure-side pre-requisite** (documented, not implemented by this workflow):
 1. Create an Azure AD App Registration (or Managed Identity).
-2. Add a Federated Credential with subject: `repo:qkfang/ai-genius-s4-ep2-speckit:ref:refs/heads/main` (and equivalent subjects for each environment if using environment-protection rules).
-3. Grant the app the `Contributor` role on the target resource group (or subscription, scoped to the three `rg-aigenius-*` groups).
+2. Add a Federated Credential with subject: `repo:qkfang/speckit-app:ref:refs/heads/main` (and equivalent subjects for each environment if using environment-protection rules).
+3. Grant the app the `Contributor` role on the target resource group (or subscription, scoped to the three `rg-sampleapp-*` groups).
 
 **Alternatives considered**:
 - `azure/login@v1` with JSON credential — rejected: stores long-lived secret.
@@ -49,9 +49,9 @@ permissions:
 
 | Dispatch input | Bicep short form | Resource group |
 |----------------|-----------------|----------------|
-| `development`  | `dev`           | `rg-aigenius-dev` |
-| `staging`      | `qa`            | `rg-aigenius-qa`  |
-| `production`   | `prod`          | `rg-aigenius-prod` |
+| `development`  | `dev`           | `rg-sampleapp-dev` |
+| `staging`      | `qa`            | `rg-sampleapp-qa`  |
+| `production`   | `prod`          | `rg-sampleapp-prod` |
 
 **Push trigger** defaults to `development` (→ `dev`) via `${{ github.event.inputs.environment || 'development' }}`.
 
@@ -157,7 +157,7 @@ concurrency:
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "appName":            { "value": "aigenius" },
+    "appName":            { "value": "sampleapp" },
     "environment":        { "value": "dev" },
     "appServicePlanSku":  { "value": "B1" },
     "staticWebAppSku":    { "value": "Free" }
@@ -173,7 +173,7 @@ concurrency:
 | `appServicePlanSku` | `B1`  | `B1`     | `B2`       |
 | `staticWebAppSku` | `Free` | `Free`   | `Standard` |
 
-**Rationale**: `prod` uses larger SKUs to meet production SLAs. All other parameters default to the `aigenius` application name and the region from the resource group.
+**Rationale**: `prod` uses larger SKUs to meet production SLAs. All other parameters default to the `sampleapp` application name and the region from the resource group.
 
 **Alternatives considered**:
 - Passing all parameters inline on the CLI — rejected: fragile; hard to review parameter changes in PRs.

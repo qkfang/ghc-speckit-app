@@ -64,10 +64,10 @@ The translation of `workflow_dispatch` human-readable values to Bicep `@allowed`
 
 | Input value | Short form | Resource group | Parameter file |
 |-------------|------------|----------------|----------------|
-| `development` | `dev` | `rg-aigenius-dev` | `bicep/parameters.dev.json` |
-| `staging` | `qa` | `rg-aigenius-qa` | `bicep/parameters.qa.json` |
-| `production` | `prod` | `rg-aigenius-prod` | `bicep/parameters.prod.json` |
-| *(push trigger)* | `dev` | `rg-aigenius-dev` | `bicep/parameters.dev.json` |
+| `development` | `dev` | `rg-sampleapp-dev` | `bicep/parameters.dev.json` |
+| `staging` | `qa` | `rg-sampleapp-qa` | `bicep/parameters.qa.json` |
+| `production` | `prod` | `rg-sampleapp-prod` | `bicep/parameters.prod.json` |
+| *(push trigger)* | `dev` | `rg-sampleapp-dev` | `bicep/parameters.dev.json` |
 
 **Validation rules**:
 - The `case` statement must have an explicit `else` branch that exits with a non-zero code if an unmapped value is encountered.
@@ -84,7 +84,7 @@ The Azure-side trust relationship enabling keyless authentication.
 | `AZURE_CLIENT_ID` | GitHub secret | Non-empty; Azure AD Application (client) ID |
 | `AZURE_TENANT_ID` | GitHub secret | Non-empty; Azure AD Tenant ID |
 | `AZURE_SUBSCRIPTION_ID` | GitHub secret | Non-empty; Azure Subscription ID |
-| Subject (Azure) | string | `repo:qkfang/ai-genius-s4-ep2-speckit:ref:refs/heads/main` |
+| Subject (Azure) | string | `repo:qkfang/speckit-app:ref:refs/heads/main` |
 
 **Note**: These are non-sensitive identifiers stored as GitHub repository secrets for convenience (not credentials). Storing them as secrets is accepted practice and consistent with the spec Assumptions.
 
@@ -119,7 +119,7 @@ One of three JSON files providing environment-specific Bicep parameters.
 
 | Field | Type | dev | qa | prod |
 |-------|------|-----|----|------|
-| `appName` | string | `aigenius` | `aigenius` | `aigenius` |
+| `appName` | string | `sampleapp` | `sampleapp` | `sampleapp` |
 | `environment` | enum `dev\|qa\|prod` | `dev` | `qa` | `prod` |
 | `appServicePlanSku` | enum `F1\|B1\|B2\|S1` | `B1` | `B1` | `B2` |
 | `staticWebAppSku` | enum `Free\|Standard` | `Free` | `Free` | `Standard` |
@@ -136,7 +136,7 @@ Every Azure resource provisioned by the Bicep templates must carry these tags.
 
 | Tag key | Required | Example value | Source |
 |---------|----------|---------------|--------|
-| `app` | ✅ | `aigenius` | `appName` Bicep parameter |
+| `app` | ✅ | `sampleapp` | `appName` Bicep parameter |
 | `component` | ✅ | `node-app` / `frontend` | Hard-coded per module |
 | `environment` | ✅ | `dev` / `qa` / `prod` | `environment` Bicep parameter |
 | `managedBy` | ✅ | `bicep` | Hard-coded in module |

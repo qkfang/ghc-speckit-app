@@ -1,4 +1,4 @@
-# AI Genius: Season 4 Episode 2 
+# Sample App: Season 4 Episode 2 
 
 ## Spec-Kit with GitHub Copilot
 
@@ -9,7 +9,7 @@
 ## 📋 Overview
 
 This repository demonstrates how to use [Spec-Kit](https://github.com/github/spec-kit) with
-**GitHub Copilot** to design the AI Genius application spec-first, then deploy it to Azure
+**GitHub Copilot** to design the Sample App application spec-first, then deploy it to Azure
 using **Bicep** (Infrastructure as Code) and **GitHub Actions** CI/CD.
 
 ---
@@ -43,11 +43,11 @@ Open Copilot Chat and run the commands in order:
 
 ```bash
 # Run the API locally
-cd src/aigenius-api
+cd src/sampleapp-api
 npm ci && npm start        # http://localhost:3000
 
 # Run the React frontend locally
-cd src/aigenius-web
+cd src/sampleapp-web
 npm ci && npm run dev      # http://localhost:5173
 ```
 
@@ -57,7 +57,7 @@ npm ci && npm run dev      # http://localhost:5173
 
 
 ```
-ai-genius-s4-ep2-speckit/
+speckit-app/
 │
 ├── bicep/
 │   ├── main.bicep                  # Orchestrates all modules
@@ -66,12 +66,12 @@ ai-genius-s4-ep2-speckit/
 │       └── webapp.bicep            # Azure App Service + Plan
 │
 ├── src/
-│   ├── ai-genius-api/              # .NET API backend
-│   │   ├── ai-genius-api.csproj
+│   ├── app-api/              # .NET API backend
+│   │   ├── app-api.csproj
 │   │   ├── Program.cs
 │   │   └── appsettings.json
 │   │
-│   └── ai-genius-web/              # React + Vite frontend
+│   └── app-web/              # React + Vite frontend
 │       ├── index.html
 │       ├── vite.config.js
 │       ├── package.json

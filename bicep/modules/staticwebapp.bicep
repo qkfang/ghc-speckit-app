@@ -39,7 +39,7 @@ resource staticWebApp 'Microsoft.Web/staticSites@2023-01-01' = {
     repositoryUrl: ''
     branch: ''
     buildProperties: {
-      appLocation: 'src/ai-genius-web'
+      appLocation: 'src/app-web'
       outputLocation: 'dist'
       apiLocation: ''
     }
