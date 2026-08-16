@@ -1,0 +1,25 @@
+{
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+	"hostRequirements": {
+	  "cpus": 4
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/azure-cli:1": {},
+		"ghcr.io/devcontainers/features/powershell:1": {},
+		"ghcr.io/devcontainers/features/dotnet:1": {}
+	},
+	"waitFor": "onCreateCommand",
+	"postCreateCommand": "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
+	"customizations": {
+	  "codespaces": {
+		"openFiles": []
+	  },
+	  "vscode": {
+		"extensions": [
+		  "ms-azuretools.vscode-bicep",
+		  "github.copilot-chat",
+		  "github.copilot"
+		]
+	  }
+	}
+  }
