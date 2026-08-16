@@ -135,7 +135,7 @@ After initialisation, Copilot gains these slash commands in its context:
 | `/speckit.implement` | Execute all tasks |
 
 > **Context Awareness:** Spec-Kit commands automatically detect the active feature based
-> on your current Git branch (e.g., `003-episode-search`). Switch features by switching branches.
+> on your current Git branch (e.g., `004-text-search`). Switch features by switching branches.
 
 ---
 
@@ -220,7 +220,7 @@ This first spec focuses on adding a **search and filter** experience to the Reac
 Create a feature branch to work on the task by running below. Check the new feature branch.
 
 ```bash
-/speckit.git.feature use feature name `episode-search`
+/speckit.git.feature use feature name `text-search`
 ```
 
 ```bash
@@ -228,9 +228,9 @@ Create a feature branch to work on the task by running below. Check the new feat
 ```
 
 Spec-Kit will:
-1. Automatically determine the next feature number (e.g., `003`)
-2. Create a feature branch (`003-episode-search`)
-3. Generate `specs/003-episode-search/spec.md` from the template
+1. Automatically determine the next feature number (e.g., `004`)
+2. Create a feature branch (`004-text-search`)
+3. Generate `specs/004-text-search/spec.md` from the template
 
 ```
 /speckit.specify
@@ -248,8 +248,8 @@ Watch the `GitHub Copilot` logs — it will take a few moments. While waiting, g
 When `/speckit.specify` completes, inspect the generated spec file below:
 
 ```bash
-cat specs/003-episode-search/spec.md
-cat specs/003-episode-search/checklists/requirements.md
+cat specs/004-text-search/spec.md
+cat specs/004-text-search/checklists/requirements.md
 ```
 
 ---
@@ -287,7 +287,7 @@ Focus on UX and accessibility.
 Only ask 1-2 questions max if needed.
 ```
 
-Review `specs/003-episode-search/spec.md` after each clarify pass to confirm the `[NEEDS CLARIFICATION]` markers are resolved.
+Review `specs/004-text-search/spec.md` after each clarify pass to confirm the `[NEEDS CLARIFICATION]` markers are resolved.
 
 ---
 
@@ -301,7 +301,7 @@ Review `specs/003-episode-search/spec.md` after each clarify pass to confirm the
 One week sprint for a React 18 app built with Vite in `src/app-web`. Use component state (useState) for the search term, no new dependencies.
 ```
 
-Spec-Kit generates into `specs/003-episode-search/`:
+Spec-Kit generates into `specs/004-text-search/`:
 
 | File | Contents |
 |------|----------|
@@ -325,13 +325,13 @@ model, and test scenarios.
 /speckit.tasks
 ```
 
-Spec-Kit reads `plan.md` and supporting documents to produce `specs/003-episode-search/tasks.md` with:
+Spec-Kit reads `plan.md` and supporting documents to produce `specs/004-text-search/tasks.md` with:
 
 - Tasks ordered by dependency
 - Independent tasks marked `[P]` (safe to run in parallel)
 - References to which contract or data-model entity each task implements
 
-Review `specs/003-episode-search/tasks.md` and adjust priorities if needed.
+Review `specs/004-text-search/tasks.md` and adjust priorities if needed.
 
 ---
 
@@ -381,7 +381,7 @@ Address any failing checklist items before continuing.
 **In GitHub Copilot Chat**, use `/speckit.implement` to execute the task list and build the search feature in the frontend. It will take a few minutes to finish.
 
 ```
-/speckit.implement 003-episode-search
+/speckit.implement 004-text-search
 ```
 
 Copilot will update `src/app-web/src/App.jsx` (and related files) to add the search box and filtering logic. Review and commit the generated changes:
@@ -495,7 +495,7 @@ Use Spec-Kit with `GitHub Copilot CLI` to replace the client-side filtering from
 
 ### 5.1 - Create a Text Search Spec
 
-Create a local branch in VS Code, call it `004-text-search`, then open a terminal window inside VS Code and run `copilot`.
+In a separate checkout, create a local branch in VS Code, call it `004-text-search`, then open a terminal window inside VS Code and run `copilot`.
 
 ```
 Please run below steps one by one, and provide response automatically. Don't overthink, make sure each step finishes promptly!
@@ -551,7 +551,7 @@ We used Spec-Kit and GitHub Copilot to:
 2. **Understood** a complete, existing spec (`001-bicep-deploy`) by reading every artifact.
 3. **Built** a frontend search feature step-by-step - specify → clarify → checklist → plan → tasks → analyze → implement.
 4. **Speed-ran** the same workflow for the matching backend API endpoint.
-5. **Connected** the two with a third spec, moving search from client-side filtering to the API.
+5. **Connected** the frontend to the API so search runs server-side, all under the same `004-text-search` spec.
 
 Every decision - from UX copy to matching rules to the search contract - lives in the spec. The code is just its expression.
 
