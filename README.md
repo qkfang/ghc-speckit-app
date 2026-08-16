@@ -92,7 +92,7 @@ speckit-app/
 │   ├── 003-api-app/                # Spec: .NET backend API app
 │   │   ├── spec.md
 │   │   └── tasks.md
-│   └── 004-multi-env-cicd/         # Spec: quality gates & deployment approvals
+│   └── 004-text-search/            # Spec: end-to-end episode text search
 │       ├── spec.md
 │       └── tasks.md
 

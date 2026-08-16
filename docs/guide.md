@@ -23,7 +23,7 @@
 | [Part 2 - Explore an Existing Spec](#part-2---explore-an-existing-spec) | Tour a completed spec & its components |
 | [Part 3 - Frontend App](#part-3---frontend-app) | Step-by-step: build a new feature in the React frontend |
 | [Part 4 - API App](#part-4---api-app) | Speed run: build the matching backend feature with a second spec |
-| [Part 5 - Testing & Quality Gates](#part-5---testing--quality-gates) | Speed run: add automated tests and quality gates |
+| [Part 5 - Text Search End-to-End](#part-5---text-search-end-to-end) | Speed run: wire the frontend to the API search endpoint |
 | [Part 6 - Wrap-up](#part-6---wrap-up) | Wrap-up and next steps |
 
 Refer to the `GitHub Actions Settings` section inside `AGENTS.md` to create GitHub repo variables and secrets.
@@ -487,15 +487,15 @@ Open `http://localhost:5151/swagger/index.html`, try the new `GET /api/episodes/
 
 ---
 
-## Part 5 - Testing & Quality Gates
+## Part 5 - Text Search End-to-End
 
-> **Agenda:** Speed run to add automated tests and quality gates to both apps.
+> **Agenda:** Speed run to connect the frontend search box to the backend search endpoint.
 
-Use Spec-Kit with `GitHub Copilot CLI` to add quality gates to the feature work. Gates enforce code quality and prevent regressions before changes merge to main.
+Use Spec-Kit with `GitHub Copilot CLI` to replace the client-side filtering from Part 3 with the server-side search endpoint built in Part 4.
 
-### 5.1 - Create a Testing & Quality Gates Spec
+### 5.1 - Create a Text Search Spec
 
-Create a local branch in VS Code, call it `005-quality-gates`, then open a terminal window inside VS Code and run `copilot`.
+Create a local branch in VS Code, call it `004-text-search`, then open a terminal window inside VS Code and run `copilot`.
 
 ```
 Please run below steps one by one, and provide response automatically. Don't overthink, make sure each step finishes promptly!
@@ -503,18 +503,19 @@ Please run below steps one by one, and provide response automatically. Don't ove
 Step 1:
 /speckit.specify
 
-Add automated test coverage and a CI quality gate for the Sample App episode search feature.
+Connect the Sample App frontend search box to the backend text search endpoint.
 
-- Add a frontend unit test for the search/filter behavior in src/app-web.
-- Add a backend test for the GET /api/episodes/search endpoint in src/app-api.
-- Add a GitHub Actions job that runs both test suites on every pull request to main.
+- The React frontend in src/app-web calls GET /api/episodes/search?query={term} instead of filtering client-side.
+- Requests are debounced so typing does not fire one request per keystroke.
+- An empty search term returns all episodes.
+- The no-results state and friendly message from Part 3 still work.
 
 Step 2:
 /speckit.clarify
 
-- Frontend tests use the existing eslint config as a lint gate; add a lightweight test runner if none exists.
-- Backend tests use the standard .NET test tooling (dotnet test).
-- The workflow fails the PR check if either test suite fails.
+- The API is the .NET minimal API in src/app-api, already exposing GET /api/episodes/search.
+- The frontend uses fetch with the existing VITE_API_URL base URL, no new dependencies.
+- Matching stays case-insensitive across title and description, handled by the API.
 
 Step 3:
 /speckit.plan
@@ -550,9 +551,9 @@ We used Spec-Kit and GitHub Copilot to:
 2. **Understood** a complete, existing spec (`001-bicep-deploy`) by reading every artifact.
 3. **Built** a frontend search feature step-by-step - specify → clarify → checklist → plan → tasks → analyze → implement.
 4. **Speed-ran** the same workflow for the matching backend API endpoint.
-5. **Added** test coverage and a CI quality gate as a new spec, without hand-writing the workflow file.
+5. **Connected** the two with a third spec, moving search from client-side filtering to the API.
 
-Every decision - from UX copy to matching rules to test coverage - lives in the spec. The code is just its expression.
+Every decision - from UX copy to matching rules to the search contract - lives in the spec. The code is just its expression.
 
 ### Explore Spec-Kit Further
 
