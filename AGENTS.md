@@ -6,11 +6,11 @@
 
 ```bash
 # Run the API locally
-cd src/sampleapp-api
-npm ci && npm start        # http://localhost:3000
+cd src/app-api
+dotnet run                 # http://localhost:5151
 
 # Run the React frontend locally
-cd src/sampleapp-web
+cd src/app-web
 npm ci && npm run dev      # http://localhost:5173
 ```
 
