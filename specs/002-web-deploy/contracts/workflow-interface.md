@@ -38,8 +38,8 @@ concurrency:
 | Name | Required | Example | Purpose |
 |---|---|---|---|
 | `ENVIRONMENT` | yes | `dev` | Identifies target env in logs/summary. |
-| `APP_NAME` | yes | `aigenius4` | Application identifier in logs/summary. |
-| `VITE_API_URL` | yes | `https://aigenius4-api-dev.azurewebsites.net` | Inlined into SPA bundle at build time. |
+| `APP_NAME` | yes | `sampleapp4` | Application identifier in logs/summary. |
+| `VITE_API_URL` | yes | `https://sampleapp4-api-dev.azurewebsites.net` | Inlined into SPA bundle at build time. |
 
 ## Outputs
 

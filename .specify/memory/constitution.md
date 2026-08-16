@@ -30,7 +30,7 @@ Templates reviewed:
 Deferred TODOs: none
 -->
 
-# AI Genius Constitution
+# Sample App Constitution
 
 ## Core Principles
 
@@ -91,8 +91,8 @@ principles; without them, compliance is unverifiable.
 
 | Layer | Technology |
 |---|---|
-| API backend | .NET 9 Minimal API (`src/ai-genius-api/`) |
-| Frontend | React 18 + Vite (`src/ai-genius-web/`) |
+| API backend | .NET 9 Minimal API (`src/app-api/`) |
+| Frontend | React 18 + Vite (`src/app-web/`) |
 | Infrastructure as Code | Azure Bicep (`bicep/`) |
 | CI/CD | GitHub Actions (`.github/workflows/`) |
 | Cloud platform | Microsoft Azure |

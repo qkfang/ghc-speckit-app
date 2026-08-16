@@ -28,7 +28,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1><span className="emoji">🤖</span> Microsoft AI Genius</h1>
+        <h1><span className="emoji">🤖</span> Microsoft Sample App</h1>
         <p>Advance your AI skills and power up your productivity.</p>
         <div className="speckit-feature">
           <a

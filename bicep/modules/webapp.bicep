@@ -57,7 +57,7 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
     serverFarmId: appServicePlan.id
     httpsOnly: true
     siteConfig: {
-      appCommandLine: './ai-genius-api'
+      appCommandLine: './app-api'
       linuxFxVersion: dotnetVersion
       minTlsVersion: '1.2'
       cors: {

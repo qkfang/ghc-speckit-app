@@ -3,13 +3,13 @@
 **Feature Branch**: `web-deploy`  
 **Created**: 2026-05-20  
 **Status**: Draft  
-**Input**: User description: "Deploy the AI Genius React frontend web app via GitHub Actions to Azure Static Web Apps using workflow `002-deploy-web.yml`."
+**Input**: User description: "Deploy the Sample App React frontend web app via GitHub Actions to Azure Static Web Apps using workflow `002-deploy-web.yml`."
 
 ## Clarifications
 
 ### Session 2026-05-20
 
-- Q: Frontend stack and build output? → A: React 18 + Vite in `src/ai-genius-web`; build output `dist/`.
+- Q: Frontend stack and build output? → A: React 18 + Vite in `src/app-web`; build output `dist/`.
 - Q: Static Web Apps deploy action version? → A: `Azure/static-web-apps-deploy@v1`.
 - Q: Required GitHub secrets? → A: `AZURE_CREDENTIALS`, `AZURE_STATIC_WEB_APPS_API_TOKEN`.
 - Q: GitHub environment-scoped variables consumed by the workflow? → A: `ENVIRONMENT`, `APP_NAME`.
@@ -19,11 +19,11 @@
 
 ### User Story 1 - Automatic deployment on push to main (Priority: P1)
 
-Whenever a developer merges or pushes changes to the `main` branch, the React frontend in `src/ai-genius-web` is automatically built and deployed to Azure Static Web Apps so the latest version is live without manual steps.
+Whenever a developer merges or pushes changes to the `main` branch, the React frontend in `src/app-web` is automatically built and deployed to Azure Static Web Apps so the latest version is live without manual steps.
 
 **Why this priority**: This is the core value of the feature — continuous delivery of the web app removes manual deployment toil and keeps production current with `main`.
 
-**Independent Test**: Push a commit to `main` that changes a file under `src/ai-genius-web/` and confirm that the workflow runs end-to-end and that the live Static Web App reflects the change.
+**Independent Test**: Push a commit to `main` that changes a file under `src/app-web/` and confirm that the workflow runs end-to-end and that the live Static Web App reflects the change.
 
 **Acceptance Scenarios**:
 
@@ -62,19 +62,19 @@ A maintainer can manually trigger the workflow from the GitHub Actions UI and ch
 - **FR-004**: The workflow MUST use the same `concurrency` group pattern as `001-deploy-infra.yml` (`group: ${{ github.workflow }}-${{ github.ref }}`, `cancel-in-progress: true`).
 - **FR-005**: The workflow MUST run on `ubuntu-latest` and target the GitHub environment selected by the input (defaulting to `dev` for push events).
 - **FR-006**: The job MUST check out the repo using `actions/checkout@v4`.
-- **FR-007**: The job MUST set up Node.js 20 using `actions/setup-node@v4` with npm caching scoped to `src/ai-genius-web/package-lock.json`.
-- **FR-008**: The job MUST run `npm ci` and `npm run build` inside `src/ai-genius-web`, producing the `dist/` output.
+- **FR-007**: The job MUST set up Node.js 20 using `actions/setup-node@v4` with npm caching scoped to `src/app-web/package-lock.json`.
+- **FR-008**: The job MUST run `npm ci` and `npm run build` inside `src/app-web`, producing the `dist/` output.
 - **FR-008a**: The build step MUST receive `VITE_API_URL` from `${{ vars.VITE_API_URL }}` as an environment variable so Vite inlines the API base URL at build time.
 - **FR-008b**: The job MUST consume `ENVIRONMENT` and `APP_NAME` GitHub environment-scoped variables (e.g., `${{ vars.ENVIRONMENT }}`, `${{ vars.APP_NAME }}`) for logging/output identification of the target deployment.
 - **FR-009**: The job MUST authenticate to Azure using `azure/login@v1` with `creds: ${{ secrets.AZURE_CREDENTIALS }}`.
-- **FR-010**: The job MUST deploy the built output to Azure Static Web Apps using `Azure/static-web-apps-deploy@v1` with `azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}`, `repo_token: ${{ secrets.GITHUB_TOKEN }}`, `action: upload`, `app_location: src/ai-genius-web/dist`, `output_location: ""`, and `skip_app_build: true`.
+- **FR-010**: The job MUST deploy the built output to Azure Static Web Apps using `Azure/static-web-apps-deploy@v1` with `azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}`, `repo_token: ${{ secrets.GITHUB_TOKEN }}`, `action: upload`, `app_location: src/app-web/dist`, `output_location: ""`, and `skip_app_build: true`.
 - **FR-011**: The workflow MUST expose the deployed Static Web App URL in the run summary/output for easy verification.
 - **FR-012**: The workflow MUST fail the run if the build step fails, without attempting deployment.
 
 ### Key Entities
 
 - **GitHub Actions Workflow (`002-deploy-web.yml`)**: The pipeline definition that builds and deploys the frontend.
-- **Frontend App (`src/ai-genius-web`)**: React + Vite source whose `dist/` build output is the deployment artifact.
+- **Frontend App (`src/app-web`)**: React + Vite source whose `dist/` build output is the deployment artifact.
 - **Azure Static Web App**: The hosting target receiving the built assets.
 - **GitHub Environment**: Logical environment (`dev`/`qa`/`prod`) supplying scoped variables and approval rules.
 
@@ -93,5 +93,5 @@ A maintainer can manually trigger the workflow from the GitHub Actions UI and ch
 - Azure Static Web Apps resource is already provisioned by workflow `001-deploy-infra.yml`.
 - Required secrets (`AZURE_CREDENTIALS`, `AZURE_STATIC_WEB_APPS_API_TOKEN`) are configured at the repository level.
 - GitHub environment variables `ENVIRONMENT`, `APP_NAME`, and `VITE_API_URL` are configured per environment (`dev`, `qa`, `prod`).
-- The frontend (React 18 + Vite) builds successfully with `npm run build` and outputs to `src/ai-genius-web/dist`.
+- The frontend (React 18 + Vite) builds successfully with `npm run build` and outputs to `src/app-web/dist`.
 - Node.js 20 is the supported runtime for the Vite build.

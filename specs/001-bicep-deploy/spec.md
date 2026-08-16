@@ -3,7 +3,7 @@
 **Feature Branch**: `001-bicep-deploy`  
 **Created**: 2026-03-22  
 **Status**: Draft  
-**Input**: User description: "Add Bicep infrastructure-as-code CI/CD to the AI Genius project."
+**Input**: User description: "Add Bicep infrastructure-as-code CI/CD to the Sample App project."
 
 ## Clarifications
 
@@ -113,9 +113,9 @@ An operations team member audits Azure costs and governance compliance. Every re
 ## Assumptions
 
 - The Azure subscription ID, tenant ID, and OIDC client/app ID will be stored as GitHub repository secrets (`AZURE_SUBSCRIPTION_ID`, `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`) prior to pipeline execution. These are non-sensitive identifiers, not credentials.
-- The default Bicep parameter values in `bicep/main.bicep` (e.g., `appName=aigenius`, `appServicePlanSku=B1`) are appropriate for the CI/CD target environment; the default environment for automated `push` triggers is `dev` (mapped from `development`).
+- The default Bicep parameter values in `bicep/main.bicep` (e.g., `appName=sampleapp`, `appServicePlanSku=B1`) are appropriate for the CI/CD target environment; the default environment for automated `push` triggers is `dev` (mapped from `development`).
 - Manual `workflow_dispatch` runs default to `development` (i.e., `dev`) unless the operator selects `staging` or `production`.
 - The `workflow_dispatch` input accepts `development`, `staging`, or `production`; the workflow translates these to `dev`, `qa`, or `prod` respectively before passing them to Bicep.
-- A single target resource group name (e.g., `rg-aigenius-dev`) will be configured as a repository variable or workflow default.
+- A single target resource group name (e.g., `rg-sampleapp-dev`) will be configured as a repository variable or workflow default.
 - Three per-environment Bicep parameter files will be created as part of this feature: `bicep/parameters.dev.json`, `bicep/parameters.qa.json`, and `bicep/parameters.prod.json`. The existing `bicep/main.parameters.json` serves as a reference but is not used directly by the workflow.
 - The Static Web App deployment token is emitted as a plain job output with no log masking.

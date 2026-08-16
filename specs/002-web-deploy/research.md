@@ -5,14 +5,14 @@ All clarifications from `spec.md` are already resolved (Session 2026-05-20). Thi
 ## Decisions
 
 ### D1: Build runtime — Node.js 20 via `actions/setup-node@v4`
-- **Decision**: Use `actions/setup-node@v4` with `node-version: '20'` and `cache: 'npm'` scoped to `src/ai-genius-web/package-lock.json`.
+- **Decision**: Use `actions/setup-node@v4` with `node-version: '20'` and `cache: 'npm'` scoped to `src/app-web/package-lock.json`.
 - **Rationale**: Node 20 is the current LTS and the documented standard in `AGENTS.md`. Built-in npm caching cuts install time without third-party actions (Simplicity principle).
 - **Alternatives considered**:
   - Node 18 — older LTS; no benefit and against repo convention.
   - `pnpm`/`yarn` setup actions — adds dependency not present in `package.json`.
 
 ### D2: Deploy action — `Azure/static-web-apps-deploy@v1` with `skip_app_build: true`
-- **Decision**: Build the SPA in a dedicated step (`npm run build`), then call the action with `skip_app_build: true` and `app_location: src/ai-genius-web/dist`.
+- **Decision**: Build the SPA in a dedicated step (`npm run build`), then call the action with `skip_app_build: true` and `app_location: src/app-web/dist`.
 - **Rationale**: Building outside the action lets us control Node version, inject `VITE_API_URL` cleanly, and surface build errors before any deploy step runs (FR-012). The action's built-in Oryx build path does not work well with environment-specific build-time variables.
 - **Alternatives considered**:
   - Let the action build via Oryx — opaque, slower, and harder to inject env-specific `VITE_API_URL`.

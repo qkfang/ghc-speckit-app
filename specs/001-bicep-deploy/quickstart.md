@@ -9,7 +9,7 @@ Get the infrastructure pipeline running end-to-end in four steps.
 ## Prerequisites
 
 - Azure subscription with permission to create resource groups and assign Contributor role
-- GitHub repository with Actions enabled (`qkfang/ai-genius-s4-ep2-speckit`)
+- GitHub repository with Actions enabled (`qkfang/speckit-app`)
 - Azure CLI installed locally (for one-time setup only)
 
 ---
@@ -18,7 +18,7 @@ Get the infrastructure pipeline running end-to-end in four steps.
 
 ```bash
 # 1a. Create the app registration
-APP_ID=$(az ad app create --display-name "ai-genius-cicd" --query appId -o tsv)
+APP_ID=$(az ad app create --display-name "sampleapp-cicd" --query appId -o tsv)
 
 # 1b. Create a Service Principal for the app
 az ad sp create --id $APP_ID
@@ -29,7 +29,7 @@ az ad app federated-credential create \
   --parameters '{
     "name": "github-main",
     "issuer": "https://token.actions.githubusercontent.com",
-    "subject": "repo:qkfang/ai-genius-s4-ep2-speckit:ref:refs/heads/main",
+    "subject": "repo:qkfang/speckit-app:ref:refs/heads/main",
     "audiences": ["api://AzureADTokenExchange"]
   }'
 ```
@@ -41,14 +41,14 @@ az ad app federated-credential create \
 ```bash
 SUBSCRIPTION_ID=$(az account show --query id -o tsv)
 
-# Grant Contributor on the subscription (scoped to rg-aigenius-* resource groups in practice)
+# Grant Contributor on the subscription (scoped to rg-sampleapp-* resource groups in practice)
 az role assignment create \
   --assignee $APP_ID \
   --role Contributor \
   --scope /subscriptions/$SUBSCRIPTION_ID
 ```
 
-> For least-privilege, scope the assignment to the three resource groups (`rg-aigenius-dev`, `rg-aigenius-qa`, `rg-aigenius-prod`) once they exist, or at the subscription level to allow the pipeline to create them.
+> For least-privilege, scope the assignment to the three resource groups (`rg-sampleapp-dev`, `rg-sampleapp-qa`, `rg-sampleapp-prod`) once they exist, or at the subscription level to allow the pipeline to create them.
 
 ---
 
@@ -84,13 +84,13 @@ git push origin main
 ```bash
 # List resources in the dev resource group
 az resource list \
-  --resource-group rg-aigenius-dev \
+  --resource-group rg-sampleapp-dev \
   --query "[].{name:name, type:type, tags:tags}" \
   --output table
 
 # Check tags on all resources
 az resource list \
-  --resource-group rg-aigenius-dev \
+  --resource-group rg-sampleapp-dev \
   --query "[?tags.managedBy == 'bicep'].{name:name, env:tags.environment}" \
   --output table
 ```
@@ -112,7 +112,7 @@ deploy-api:
       run: |
         az webapp deploy \
           --name "${{ needs.infra.outputs.app-service-name }}" \
-          --resource-group "rg-aigenius-dev" \
+          --resource-group "rg-sampleapp-dev" \
           --src-path app.zip
 
 deploy-web:
@@ -124,7 +124,7 @@ deploy-web:
       with:
         azure_static_web_apps_api_token: "${{ needs.infra.outputs.static-web-app-token }}"
         action: upload
-        app_location: src/ai-genius-web
+        app_location: src/app-web
         output_location: dist
 ```
 

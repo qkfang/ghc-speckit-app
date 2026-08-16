@@ -1,23 +1,25 @@
-# AI Genius: Season 4 Episode 2 
+# Sample App
 
 ## Spec-Kit with GitHub Copilot
 
-> **Spec-Driven Development with GitHub Copilot, then deploy to Azure using Bicep and GitHub Actions.**
+> **Spec-Driven App Development with GitHub Copilot — build frontend and backend features spec-first, then deploy to Azure using Bicep and GitHub Actions.**
 
 ---
 
 ## 📋 Overview
 
 This repository demonstrates how to use [Spec-Kit](https://github.com/github/spec-kit) with
-**GitHub Copilot** to design the AI Genius application spec-first, then deploy it to Azure
-using **Bicep** (Infrastructure as Code) and **GitHub Actions** CI/CD.
+**GitHub Copilot** to design and build a full-stack sample application spec-first — a React
+frontend and a .NET API backend — and then deploy it to Azure using **Bicep** (Infrastructure
+as Code) and **GitHub Actions** CI/CD.
 
 ---
 
 ## 📖 Full Guide
 
 See [`docs/guide.md`](docs/guide.md) for the complete step-by-step walkthrough,
-including all `/speckit.*` command examples and the full Azure deployment setup.
+including all `/speckit.*` command examples for building app features in the frontend
+and backend.
 
 ---
 
@@ -43,11 +45,11 @@ Open Copilot Chat and run the commands in order:
 
 ```bash
 # Run the API locally
-cd src/aigenius-api
-npm ci && npm start        # http://localhost:3000
+cd src/app-api
+dotnet run                 # http://localhost:5151
 
 # Run the React frontend locally
-cd src/aigenius-web
+cd src/app-web
 npm ci && npm run dev      # http://localhost:5173
 ```
 
@@ -57,7 +59,7 @@ npm ci && npm run dev      # http://localhost:5173
 
 
 ```
-ai-genius-s4-ep2-speckit/
+speckit-app/
 │
 ├── bicep/
 │   ├── main.bicep                  # Orchestrates all modules
@@ -66,12 +68,12 @@ ai-genius-s4-ep2-speckit/
 │       └── webapp.bicep            # Azure App Service + Plan
 │
 ├── src/
-│   ├── ai-genius-api/              # .NET API backend
-│   │   ├── ai-genius-api.csproj
+│   ├── app-api/              # .NET API backend
+│   │   ├── app-api.csproj
 │   │   ├── Program.cs
 │   │   └── appsettings.json
 │   │
-│   └── ai-genius-web/              # React + Vite frontend
+│   └── app-web/              # React + Vite frontend
 │       ├── index.html
 │       ├── vite.config.js
 │       ├── package.json
@@ -87,18 +89,19 @@ ai-genius-s4-ep2-speckit/
 │   ├── 002-web-deploy/        # Spec: frontend deployment via GitHub Actions
 │   │   ├── spec.md
 │   │   └── tasks.md
-│   ├── 003-api-deploy/             # Spec: backend API deployment via GitHub Actions
+│   ├── 003-episode-search/         # Spec: frontend search/filter feature
 │   │   ├── spec.md
 │   │   └── tasks.md
-│   └── 004-multi-env-cicd/          # Spec: quality gates & deployment approvals
+│   ├── 004-episode-search-api/     # Spec: backend search endpoint
+│   │   ├── spec.md
+│   │   └── tasks.md
+│   └── 005-quality-gates/          # Spec: automated tests & CI quality gate
 │       ├── spec.md
 │       └── tasks.md
 
 └── .github/
     └── workflows/
-        ├── 001-deploy-web.yml          # Deploy frontend to Azure Static Web Apps
-        ├── 002-deploy-api.yml          # Deploy API to Azure App Service
-        ├── 003-deploy-infra.yml        # Provision Bicep infrastructure
-        └── 004-multi-env-cicd.yml        # Provision Bicep infrastructure
+        ├── 001-deploy-infra.yml        # Provision Bicep infrastructure
+        └── 002-deploy-web.yml          # Deploy frontend to Azure Static Web Apps
 ```
 

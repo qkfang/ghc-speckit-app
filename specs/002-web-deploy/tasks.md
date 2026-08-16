@@ -16,8 +16,8 @@
 
 **Purpose**: Confirm the frontend builds locally so the workflow has a known-good baseline.
 
-- [X] T001 Verify `src/ai-genius-web/package.json` contains a `build` script that runs `vite build` and outputs to `src/ai-genius-web/dist`
-- [X] T002 Verify `src/ai-genius-web/package-lock.json` exists (required for `actions/setup-node@v4` npm cache key)
+- [X] T001 Verify `src/app-web/package.json` contains a `build` script that runs `vite build` and outputs to `src/app-web/dist`
+- [X] T002 Verify `src/app-web/package-lock.json` exists (required for `actions/setup-node@v4` npm cache key)
 
 ---
 
@@ -36,18 +36,18 @@
 
 ## Phase 3: User Story 1 — Automatic deployment on push to main (Priority: P1) 🎯 MVP
 
-**Goal**: Every push to `main` automatically builds the React + Vite SPA in `src/ai-genius-web` and deploys `dist/` to Azure Static Web Apps, with the deployed URL surfaced in the run summary.
+**Goal**: Every push to `main` automatically builds the React + Vite SPA in `src/app-web` and deploys `dist/` to Azure Static Web Apps, with the deployed URL surfaced in the run summary.
 
-**Independent Test**: Push a commit that modifies a file under `src/ai-genius-web/` to `main`; confirm the workflow completes successfully and the Static Web App URL printed in the run summary serves the updated frontend.
+**Independent Test**: Push a commit that modifies a file under `src/app-web/` to `main`; confirm the workflow completes successfully and the Static Web App URL printed in the run summary serves the updated frontend.
 
 - [X] T005 [US1] Create `.github/workflows/002-deploy-web.yml` with `name: 002 Deploy Web`, `on: push: branches: [main]`, and `concurrency: {group: "${{ github.workflow }}-${{ github.ref }}", cancel-in-progress: true}` (FR-001, FR-002, FR-004)
 - [X] T006 [US1] Add `build-and-deploy` job to `.github/workflows/002-deploy-web.yml` — `runs-on: ubuntu-latest`, `environment: ${{ github.event.inputs.environment || 'dev' }}` (FR-005)
 - [X] T007 [US1] Add `actions/checkout@v4` step as the first step of `build-and-deploy` in `.github/workflows/002-deploy-web.yml` (FR-006)
-- [X] T008 [US1] Add `actions/setup-node@v4` step to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `node-version: '20'`, `cache: 'npm'`, `cache-dependency-path: src/ai-genius-web/package-lock.json` (FR-007)
-- [X] T009 [US1] Add `npm ci` step to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `working-directory: src/ai-genius-web` (FR-008)
-- [X] T010 [US1] Add `npm run build` step to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `working-directory: src/ai-genius-web` and `env: {VITE_API_URL: ${{ vars.VITE_API_URL }}}` so Vite inlines the API base URL (FR-008, FR-008a, FR-012)
+- [X] T008 [US1] Add `actions/setup-node@v4` step to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `node-version: '20'`, `cache: 'npm'`, `cache-dependency-path: src/app-web/package-lock.json` (FR-007)
+- [X] T009 [US1] Add `npm ci` step to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `working-directory: src/app-web` (FR-008)
+- [X] T010 [US1] Add `npm run build` step to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `working-directory: src/app-web` and `env: {VITE_API_URL: ${{ vars.VITE_API_URL }}}` so Vite inlines the API base URL (FR-008, FR-008a, FR-012)
 - [X] T011 [US1] Add `azure/login@v1` step to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `creds: ${{ secrets.AZURE_CREDENTIALS }}` (FR-009)
-- [X] T012 [US1] Add `Azure/static-web-apps-deploy@v1` step (id: `swa`) to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `action: upload`, `app_location: src/ai-genius-web/dist`, `output_location: ""`, `skip_app_build: true`, `repo_token: ${{ secrets.GITHUB_TOKEN }}`, `azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}` (FR-010)
+- [X] T012 [US1] Add `Azure/static-web-apps-deploy@v1` step (id: `swa`) to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` with `action: upload`, `app_location: src/app-web/dist`, `output_location: ""`, `skip_app_build: true`, `repo_token: ${{ secrets.GITHUB_TOKEN }}`, `azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}` (FR-010)
 - [X] T013 [US1] Add a final step to `build-and-deploy` in `.github/workflows/002-deploy-web.yml` that writes `Deployed ${{ vars.APP_NAME }} to ${{ vars.ENVIRONMENT }} — URL: ${{ steps.swa.outputs.static_web_app_url }}` to `$GITHUB_STEP_SUMMARY` (FR-008b, FR-011)
 
 **Checkpoint**: US1 complete — pushing to `main` builds the SPA and deploys it to the `dev` Static Web App; the deployed URL appears in the run summary.
@@ -74,7 +74,7 @@
 - [X] T016 Trigger the workflow on `main` and verify end-to-end runtime is under 5 minutes (SC-002)
 - [X] T017 Manually dispatch the workflow against `dev`, `qa`, and `prod` and confirm each deploys to the correct Static Web App and that the printed URL serves the latest build (SC-001, SC-003)
 - [X] T018 Push two commits to `main` in quick succession and verify the older run is cancelled by concurrency (SC-004)
-- [X] T019 Temporarily break `src/ai-genius-web/src/App.jsx` (syntax error), push, and confirm the workflow fails at the build step and skips deploy; then revert (SC-005, FR-012) — verified via run 26142151191 (failed at Build step, deploy skipped)
+- [X] T019 Temporarily break `src/app-web/src/App.jsx` (syntax error), push, and confirm the workflow fails at the build step and skips deploy; then revert (SC-005, FR-012) — verified via run 26142151191 (failed at Build step, deploy skipped)
 
 ---
 

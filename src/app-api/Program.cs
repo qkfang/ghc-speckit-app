@@ -18,9 +18,9 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new()
     {
-        Title = "AI Genius API",
+        Title = "Sample App API",
         Version = "v1",
-        Description = "REST API for Microsoft AI Genius Season 4 — SpecKit episode."
+        Description = "REST API for Microsoft Sample App Season 4 — SpecKit episode."
     });
 });
 
@@ -33,7 +33,7 @@ app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "AI Genius API v1");
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample App API v1");
     options.RoutePrefix = "swagger";
 });
 
@@ -67,14 +67,14 @@ var episodesJsonPath = Path.Combine(app.Environment.ContentRootPath, "episodes.j
 var episodesJson = File.ReadAllText(episodesJsonPath);
 var season4Episodes = JsonSerializer.Deserialize<JsonElement[]>(episodesJson)!;
 
-// GET /api/series — AI Genius Season 4 series info
+// GET /api/series — Sample App Season 4 series info
 app.MapGet("/api/series", () => Results.Ok(new
 {
-    name = "Microsoft AI Genius",
+    name = "Microsoft Sample App",
     season = 4,
     seriesId = "s-1453",
     url = "https://developer.microsoft.com/en-us/reactor/series/s-1453/",
-    description = "Season 4 of Microsoft AI Genius — hands-on sessions on agentic AI, DevOps automation, and developer experience upgrades.",
+    description = "Season 4 of Microsoft Sample App — hands-on sessions on agentic AI, DevOps automation, and developer experience upgrades.",
     topics = season4Episodes.Select(e => new
     {
         episode = e.GetProperty("episode").GetInt32(),
@@ -85,19 +85,19 @@ app.MapGet("/api/series", () => Results.Ok(new
 }))
 .WithName("GetSeries")
 .WithSummary("Series information")
-.WithDescription("Returns information about the Microsoft AI Genius Season 4 series.")
+.WithDescription("Returns information about the Microsoft Sample App Season 4 series.")
 .WithTags("Content");
 
 // GET /api/episodes — all Season 4 episodes
 app.MapGet("/api/episodes", () => Results.Ok(new
 {
     season = 4,
-    name = "Microsoft AI Genius — Season 4",
+    name = "Microsoft Sample App — Season 4",
     episodes = season4Episodes
 }))
 .WithName("GetEpisodes")
 .WithSummary("All Season 4 episodes")
-.WithDescription("Returns all episodes for Microsoft AI Genius Season 4.")
+.WithDescription("Returns all episodes for Microsoft Sample App Season 4.")
 .WithTags("Content");
 
 // GET /api/episodes/{id} — single Season 4 episode by number

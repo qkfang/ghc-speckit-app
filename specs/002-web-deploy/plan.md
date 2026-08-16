@@ -5,7 +5,7 @@
 
 ## Summary
 
-Add a GitHub Actions workflow (`.github/workflows/002-deploy-web.yml`) that builds the React 18 + Vite frontend in `src/ai-genius-web` and deploys the resulting `dist/` to Azure Static Web Apps using `Azure/static-web-apps-deploy@v1`. The workflow runs on every push to `main` and on `workflow_dispatch` with a `dev`/`qa`/`prod` environment input. It consumes GitHub environment-scoped variables (`ENVIRONMENT`, `APP_NAME`, `VITE_API_URL`) and repository secrets (`AZURE_CREDENTIALS`, `AZURE_STATIC_WEB_APPS_API_TOKEN`). Scoped to a one-week sprint — happy path only, no edge-case hardening beyond fail-fast on build errors.
+Add a GitHub Actions workflow (`.github/workflows/002-deploy-web.yml`) that builds the React 18 + Vite frontend in `src/app-web` and deploys the resulting `dist/` to Azure Static Web Apps using `Azure/static-web-apps-deploy@v1`. The workflow runs on every push to `main` and on `workflow_dispatch` with a `dev`/`qa`/`prod` environment input. It consumes GitHub environment-scoped variables (`ENVIRONMENT`, `APP_NAME`, `VITE_API_URL`) and repository secrets (`AZURE_CREDENTIALS`, `AZURE_STATIC_WEB_APPS_API_TOKEN`). Scoped to a one-week sprint — happy path only, no edge-case hardening beyond fail-fast on build errors.
 
 ## Technical Context
 
@@ -17,7 +17,7 @@ Add a GitHub Actions workflow (`.github/workflows/002-deploy-web.yml`) that buil
 **Project Type**: CI/CD pipeline (single workflow file deploying a Vite SPA)
 **Performance Goals**: End-to-end workflow (install → build → deploy) under 5 minutes (SC-002)
 **Constraints**: Happy-path scope only — one-week sprint. `VITE_API_URL` must be inlined at build time (Vite requirement); concurrency-cancel older runs on the same ref
-**Scale/Scope**: 1 workflow file; 3 environments (dev/qa/prod); single SPA artifact (`src/ai-genius-web/dist`)
+**Scale/Scope**: 1 workflow file; 3 environments (dev/qa/prod); single SPA artifact (`src/app-web/dist`)
 
 ## Constitution Check
 
@@ -60,7 +60,7 @@ specs/002-web-deploy/
     └── 002-deploy-web.yml        # NEW — single-job workflow: build + deploy frontend
 
 src/
-└── ai-genius-web/                # Existing — React 18 + Vite SPA
+└── app-web/                # Existing — React 18 + Vite SPA
     ├── package.json
     ├── package-lock.json
     ├── vite.config.js

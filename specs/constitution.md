@@ -1,4 +1,4 @@
-# Project Constitution — AI Genius Demo Application
+# Project Constitution — Sample App Demo Application
 
 This constitution establishes the governing principles for every specification, plan, and
 implementation decision made in this repository.
@@ -7,10 +7,10 @@ implementation decision made in this repository.
 
 ## Project Overview
 
-This project is the **AI Genius demo application**, consisting of:
+This project is the **Sample App demo application**, consisting of:
 
-- **`src/ai-genius-api`** — .NET minimal API backend
-- **`src/ai-genius-web`** — React (Vite) frontend
+- **`src/app-api`** — .NET minimal API backend
+- **`src/app-web`** — React (Vite) frontend
 - **`bicep/`** — Azure Bicep infrastructure-as-code
 
 ---

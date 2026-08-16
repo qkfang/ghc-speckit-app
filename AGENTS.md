@@ -6,11 +6,11 @@
 
 ```bash
 # Run the API locally
-cd src/aigenius-api
-npm ci && npm start        # http://localhost:3000
+cd src/app-api
+dotnet run                 # http://localhost:5151
 
 # Run the React frontend locally
-cd src/aigenius-web
+cd src/app-web
 npm ci && npm run dev      # http://localhost:5173
 ```
 
@@ -19,7 +19,7 @@ npm ci && npm run dev      # http://localhost:5173
 ## Project Structure
 
 ```
-ai-genius-s4-ep2-speckit/
+speckit-app/
 │
 ├── bicep/
 │   ├── main.bicep                  # Orchestrates all modules
@@ -28,12 +28,12 @@ ai-genius-s4-ep2-speckit/
 │       └── webapp.bicep            # Azure App Service + Plan
 │
 ├── src/
-│   ├── ai-genius-api/              # .NET API backend
-│   │   ├── ai-genius-api.csproj
+│   ├── app-api/              # .NET API backend
+│   │   ├── app-api.csproj
 │   │   ├── Program.cs
 │   │   └── appsettings.json
 │   │
-│   └── ai-genius-web/              # React + Vite frontend
+│   └── app-web/              # React + Vite frontend
 │       ├── index.html
 │       ├── vite.config.js
 │       ├── package.json
@@ -68,7 +68,7 @@ ai-genius-s4-ep2-speckit/
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `appName` | `aigenius4` | Base name for all Azure resources |
+| `appName` | `sampleapp4` | Base name for all Azure resources |
 | `location` | `eastus2` | Azure region |
 | `environment` | `development` | `dev`, `qa`, or `prod` |
 | `appServicePlanSku` | `B1` | App Service Plan SKU (`F1`, `B1`, `B2`, `S1`) |
@@ -77,8 +77,8 @@ ai-genius-s4-ep2-speckit/
 | Resource | Bicep module | Purpose |
 |----------|-------------|---------|
 | Azure App Service Plan (Linux B1) | `modules/webapp.bicep` | Compute plan for the API |
-| Azure App Service | `modules/webapp.bicep` | Hosts `src/ai-genius-api` |
-| Azure Static Web App | `modules/staticwebapp.bicep` | Hosts built `src/ai-genius-web` |
+| Azure App Service | `modules/webapp.bicep` | Hosts `src/app-api` |
+| Azure Static Web App | `modules/staticwebapp.bicep` | Hosts built `src/app-web` |
 
 ---
 
@@ -131,16 +131,16 @@ AZURE_CREDENTIALS example
 
 | Variable | Used By | Example Value | Purpose |
 |----------|---------|---------------|---------|
-| `APP_NAME` | 001 | `aigenius4` | Application base name |
+| `APP_NAME` | 001 | `sampleapp4` | Application base name |
 | `AZURE_LOCATION` | 001 | `eastus2` | Application base name |
 
 ### Required GitHub Variables (per environment: dev / qa/ prod)
 
 | Variable | Used By | Example Value | Purpose |
 |----------|---------|---------------|---------|
-| `AZURE_RESOURCE_GROUP` | 001 | `rg-aigenius4-dev` | Target resource group |
-| `VITE_API_URL` | 002 | `https://aigenius4-api-dev.azurewebsites.net` | API endpoint for frontend |
-| `APP_SERVICE_NAME` | 003 | `aigenius4-api-dev` | App Service resource name |
+| `AZURE_RESOURCE_GROUP` | 001 | `rg-sampleapp4-dev` | Target resource group |
+| `VITE_API_URL` | 002 | `https://sampleapp4-api-dev.azurewebsites.net` | API endpoint for frontend |
+| `APP_SERVICE_NAME` | 003 | `sampleapp4-api-dev` | App Service resource name |
 
 
 ## Workflow Pattern Standards
@@ -174,7 +174,7 @@ concurrency:
   with:
     node-version: '20'
     cache: 'npm'
-    cache-dependency-path: src/ai-genius-web/package-lock.json
+    cache-dependency-path: src/app-web/package-lock.json
 ```
 
 **.NET Setup (API):**
@@ -189,7 +189,7 @@ concurrency:
 - uses: Azure/static-web-apps-deploy@v1
   with:
     action: upload
-    app_location: src/ai-genius-web/dist
+    app_location: src/app-web/dist
     output_location: ""
     skip_app_build: true
     repo_token: ${{ secrets.GITHUB_TOKEN }}
