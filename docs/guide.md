@@ -527,9 +527,9 @@ Open `http://localhost:5151/swagger/index.html`, try each endpoint including `GE
 
 ## Part 5 - Text Search End-to-End
 
-> **Agenda:** Speed run to connect the frontend search box to the backend search endpoint.
+> **Agenda:** Speed run to connect the frontend search box to the backend search endpoint, with wildcard search support.
 
-Use Spec-Kit with `GitHub Copilot CLI` to replace the client-side filtering from Part 3 with the server-side search endpoint built in Part 4.
+Use Spec-Kit with `GitHub Copilot CLI` to replace the client-side filtering from Part 3 with the server-side search endpoint built in Part 4, extended to support wildcard queries like `*dan*`.
 
 ### 5.1 - Create a Text Search Spec
 
@@ -544,6 +544,8 @@ Step 1:
 Connect the Sample App frontend search box to the backend text search endpoint.
 
 - The React frontend in src/app-web calls GET /api/episodes/search?query={term} instead of filtering client-side.
+- The search term supports wildcard matching using `*` (e.g. `*dan*` matches any title or description containing "dan", `dan*` matches values starting with "dan", `*dan` matches values ending with "dan").
+- A search term with no `*` wildcard falls back to a plain case-insensitive substring match, same as before.
 - Requests are debounced so typing does not fire one request per keystroke.
 - An empty search term returns all episodes.
 - The no-results state and friendly message from Part 3 still work.
@@ -554,6 +556,7 @@ Step 2:
 - The API is the .NET minimal API in src/app-api, already exposing GET /api/episodes/search.
 - The frontend uses fetch with the existing VITE_API_URL base URL, no new dependencies.
 - Matching stays case-insensitive across title and description, handled by the API.
+- The API translates `*` wildcards in the query into a case-insensitive pattern match (e.g. convert to a regex where `*` becomes `.*`), leaving all other characters literal.
 
 Step 3:
 /speckit.plan
