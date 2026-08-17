@@ -22,7 +22,7 @@
 | [Part 1 - Setup](#part-1---setup) | Set up Spec-Kit in the GitHub repo |
 | [Part 2 - Explore an Existing Spec](#part-2---explore-an-existing-spec) | Tour a completed spec & its components |
 | [Part 3 - Frontend App](#part-3---frontend-app) | Step-by-step: build a new feature in the React frontend |
-| [Part 4 - API App](#part-4---api-app) | Speed run: build the matching backend feature with a second spec |
+| [Part 4 - API App](#part-4---api-app) | Speed run: build the backend API app from scratch with a second spec |
 | [Part 5 - Text Search End-to-End](#part-5---text-search-end-to-end) | Speed run: wire the frontend to the API search endpoint |
 | [Part 6 - Wrap-up](#part-6---wrap-up) | Wrap-up and next steps |
 
@@ -208,19 +208,29 @@ We'll use this exact flow twice in this session: once for the frontend feature, 
 
 ## Part 3 - Frontend App
 
-> **Agenda:** Step-by-step walkthrough to build a new search/filter feature in the React frontend.
+> **Agenda:** Step-by-step walkthrough to build the React frontend **from scratch** in `src/app-web`, including a search/filter feature.
+
+There is no frontend app yet - `src/app-web` doesn't exist in this repo. Use Spec-Kit to scaffold it from nothing, using the earlier prototype in `src-bk/app-web` purely as a **reference** for the framework, pages, and requirements (don't copy the folder directly - describe the app so Spec-Kit generates it end-to-end).
+
+Reference implementation notes (from `src-bk/app-web`):
+
+- **Framework:** React 18 + Vite, plain JavaScript/JSX (no TypeScript), single-page app.
+- **Layout:** a header (branding + tagline), a main section with a series info card and an episode grid of cards, and a footer.
+- **Data:** fetches `GET /api/status`, `GET /api/series`, and `GET /api/episodes` from the .NET API on load; shows loading and error states.
+- **Config:** `VITE_API_URL` env var for the API base URL; dev server on port `5173` with a `/api` proxy to `http://localhost:5151` in `vite.config.js`.
+- **Deployment:** `public/staticwebapp.config.json` for Azure Static Web Apps routing.
 
 ### 3.1 - Create the Spec
 
 **In GitHub Copilot Chat**, use `/speckit.specify` to describe what you want to build.
 Focus on the **what** and **why** - not the tech stack.
 
-This first spec focuses on adding a **search and filter** experience to the React frontend so users can find episodes quickly.
+This first spec builds the Sample App React frontend from scratch, including a **search and filter** experience so users can find episodes quickly.
 
 Create a feature branch to work on the task by running below. Check the new feature branch.
 
 ```bash
-/speckit.git.feature use feature name `text-search`
+/speckit.git.feature use feature name `web-app`
 ```
 
 ```bash
@@ -228,19 +238,20 @@ Create a feature branch to work on the task by running below. Check the new feat
 ```
 
 Spec-Kit will:
-1. Automatically determine the next feature number (e.g., `004`)
-2. Create a feature branch (`004-text-search`)
-3. Generate `specs/004-text-search/spec.md` from the template
+1. Automatically determine the next feature number (e.g., `002`)
+2. Create a feature branch (`002-web-app`)
+3. Generate `specs/002-web-app/spec.md` from the template
 
 ```
 /speckit.specify
 
-Add a search and filter feature to the Sample App React frontend in src/app-web.
+Build the Sample App React frontend from scratch in src/app-web. There is no existing app - this is a brand-new single-page app.
 
-- Users can type in a search box to filter episodes by title or description.
+- On load, the app fetches series and episode data from the existing .NET API (GET /api/status, GET /api/series, GET /api/episodes) and renders a header, a series info section, and a grid of episode cards (title, presenter, status).
+- Users can type in a search box to filter the visible episodes by title or description.
 - Users can filter the visible episode list without reloading the page.
-- The feature must work with the existing GET /api/episodes data already fetched by the app.
 - No results found state must show a friendly message.
+- Show friendly loading and error states while the API is unreachable.
 ```
 
 Watch the `GitHub Copilot` logs — it will take a few moments. While waiting, go to the `.specify/templates` folder to explore the template like `spec-template.md` and show what's there.
@@ -248,8 +259,8 @@ Watch the `GitHub Copilot` logs — it will take a few moments. While waiting, g
 When `/speckit.specify` completes, inspect the generated spec file below:
 
 ```bash
-cat specs/004-text-search/spec.md
-cat specs/004-text-search/checklists/requirements.md
+cat specs/002-web-app/spec.md
+cat specs/002-web-app/checklists/requirements.md
 ```
 
 ---
@@ -266,8 +277,10 @@ Use the `Clarify` button suggested by `GitHub Copilot` to continue the flow, ans
 ```
 /speckit.clarify
 
-The frontend is a React 18 + Vite app in `src/app-web`. Resolve all [NEEDS CLARIFICATION] markers in the spec.
+The frontend is a brand-new React 18 + Vite app to be scaffolded in `src/app-web` (no existing code). Resolve all [NEEDS CLARIFICATION] markers in the spec.
 
+- Use plain JavaScript/JSX (no TypeScript), a single project, no routing library.
+- The API base URL comes from a VITE_API_URL environment variable; the dev server proxies /api to http://localhost:5151.
 - Filtering happens client-side against episodes already loaded from GET /api/episodes.
 - The search box lives in the header, above the episode grid.
 - Matching is case-insensitive and matches title or description.
@@ -298,10 +311,10 @@ Review `specs/004-text-search/spec.md` after each clarify pass to confirm the `[
 ```
 /speckit.plan
 
-One week sprint for a React 18 app built with Vite in `src/app-web`. Use component state (useState) for the search term, no new dependencies.
+One week sprint to scaffold a brand-new React 18 app with Vite in `src/app-web` from scratch (project init, package.json, vite.config.js, index.html, src/App.jsx). Use component state (useState) for the search term, no new dependencies beyond react, react-dom, and vite.
 ```
 
-Spec-Kit generates into `specs/004-text-search/`:
+Spec-Kit generates into `specs/002-web-app/`:
 
 | File | Contents |
 |------|----------|
@@ -325,13 +338,13 @@ model, and test scenarios.
 /speckit.tasks
 ```
 
-Spec-Kit reads `plan.md` and supporting documents to produce `specs/004-text-search/tasks.md` with:
+Spec-Kit reads `plan.md` and supporting documents to produce `specs/002-web-app/tasks.md` with:
 
 - Tasks ordered by dependency
 - Independent tasks marked `[P]` (safe to run in parallel)
 - References to which contract or data-model entity each task implements
 
-Review `specs/004-text-search/tasks.md` and adjust priorities if needed.
+Review `specs/002-web-app/tasks.md` and adjust priorities if needed.
 
 ---
 
@@ -378,17 +391,17 @@ Address any failing checklist items before continuing.
 
 ### 3.7 - Implement
 
-**In GitHub Copilot Chat**, use `/speckit.implement` to execute the task list and build the search feature in the frontend. It will take a few minutes to finish.
+**In GitHub Copilot Chat**, use `/speckit.implement` to execute the task list and build the frontend from scratch. It will take a few minutes to finish.
 
 ```
-/speckit.implement 004-text-search
+/speckit.implement 002-web-app
 ```
 
-Copilot will update `src/app-web/src/App.jsx` (and related files) to add the search box and filtering logic. Review and commit the generated changes:
+Copilot will scaffold `src/app-web` (package.json, vite.config.js, index.html, `src/App.jsx`, and related files), fetching series/episode data from the API and adding the search box and filtering logic. Review and commit the generated changes:
 
 ```bash
 git add .
-git commit -m "feat: add episode search to frontend"
+git commit -m "feat: scaffold frontend app with episode search"
 ```
 
 ---
@@ -397,7 +410,7 @@ git commit -m "feat: add episode search to frontend"
 
 ```bash
 cd src/app-web
-npm ci
+npm install
 npm run dev
 ```
 
@@ -421,11 +434,27 @@ If any step fails, check the browser console for errors and fix before proceedin
 
 ## Part 4 - API App
 
-> **Agenda:** Speed run to build the matching backend search endpoint with a second spec.
+> **Agenda:** Speed run to build the backend API app from scratch with a second spec.
 
-Use Spec-Kit with `GitHub Cloud Agent` or `GitHub Copilot + Autopilot` to create a spec for the backend search endpoint. The speed workflow runs all spec-kit commands: specify → clarify → plan → tasks → implement.
+There is no app in `src/app-api` yet — this part builds it from nothing. A reference
+implementation already lives in `src-bk/app-api`; use it to see the expected framework,
+endpoints, and data shape so you can write an accurate `/speckit.specify` prompt. Don't
+copy it directly — the point is to let Spec-Kit regenerate an equivalent app from the spec.
 
-### 4.1 - Create the Backend Search Endpoint (via GitHub Copilot Coding Agent)
+Reference implementation notes (from `src-bk/app-api`):
+
+| Aspect | Detail |
+|--------|--------|
+| Framework | .NET minimal API (single `Program.cs`), same target framework as the rest of the solution |
+| Endpoints | `GET /api/status`, `GET /api/health`, `GET /api/series`, `GET /api/episodes`, `GET /api/episodes/{id}` |
+| Data | Episodes seeded from a local `episodes.json` file (no database) — season, episode number, title, presenter, introduction, `youWillLearn`, `technologiesUsed`, `whoShouldAttend`, status |
+| CORS | Allows the React frontend origin (`http://localhost:5173`) via configurable `AllowedOrigins` |
+| Docs | Swagger/OpenAPI UI at `/swagger/index.html` |
+| Landing page | Static `wwwroot/index.html` confirms the service is running at `/` |
+
+Use Spec-Kit with `GitHub Cloud Agent` or `GitHub Copilot + Autopilot` to create a spec for the whole backend app. The speed workflow runs all spec-kit commands: specify → clarify → plan → tasks → implement.
+
+### 4.1 - Create the Backend API From Scratch (via GitHub Copilot Coding Agent)
 
 Go to GitHub.com and select the repo, go to the `Agent` tab to invoke an agent session. It takes about 15-20 minutes to run. Suggest launching this session at the start of the talk and leaving it running in the background.
 
@@ -435,19 +464,28 @@ Please run below steps one by one, and provide response automatically. Don't ove
 Step 1:
 /speckit.specify
 
-Add a search endpoint to the Sample App backend API in `src/app-api`.
+Build the Sample App backend API from scratch in `src/app-api`. There is no existing app in this folder yet.
 
-- New endpoint: GET /api/episodes/search?query={term}
-- Matches episode title or description, case-insensitive.
-- Returns the same episode shape as GET /api/episodes, filtered.
-- Returns an empty array (not an error) when no episodes match.
+- New endpoint: GET /api/status returns runtime status (environment, timestamp).
+- New endpoint: GET /api/health returns a health check with uptime.
+- New endpoint: GET /api/series returns Sample App series info (name, season, description, episode topics).
+- New endpoint: GET /api/episodes returns all episodes for the season.
+- New endpoint: GET /api/episodes/{id} returns a single episode by number, or a not-found error if it doesn't exist.
+- New endpoint: GET /api/episodes/search?query={term} matches episode title or description, case-insensitive, and returns the same shape as GET /api/episodes, filtered.
+- Returns an empty array (not an error) when no episodes match the search.
+- Episode and series data comes from a small local data file, no database.
+- The frontend (running separately on http://localhost:5173) must be able to call these endpoints from the browser.
+- API responses and available endpoints must be explorable through built-in interactive API docs.
 
 Step 2:
 /speckit.clarify
 
-- The API runs on .NET 9 minimal APIs, same style as the existing endpoints in Program.cs.
-- The query parameter is optional; omitting it returns all episodes (same as GET /api/episodes).
+- The API runs on .NET minimal APIs in a single Program.cs, matching the target framework already used elsewhere in this solution.
+- Episode fields match: season, episode, title, presenter, introduction, youWillLearn, technologiesUsed, whoShouldAttend, status.
+- The search query parameter is optional; omitting it returns all episodes (same as GET /api/episodes).
 - Matching uses simple case-insensitive Contains(), no external search library.
+- Allowed CORS origins are configurable, defaulting to http://localhost:5173.
+- No authentication and no database for this demo.
 
 Step 3:
 /speckit.plan
@@ -465,9 +503,9 @@ Step 7:
 /speckit.implement
 ```
 
-### 4.2 - Create the Backend Search Endpoint (via GitHub Copilot + Autopilot)
+### 4.2 - Create the Backend API From Scratch (via GitHub Copilot + Autopilot)
 
-Use `Autopilot` to implement the endpoint end-to-end instead:
+Use `Autopilot` to implement the app end-to-end instead:
 
 - Turn on `Autopilot` in VS Code
 - Invoke the prompt from #4.1 in a separate VS Code window and run it locally
@@ -476,14 +514,14 @@ Use `Autopilot` to implement the endpoint end-to-end instead:
 
 ### 4.3 - Review and Verify
 
-Check the logs and review the generated changes to `src/app-api/Program.cs`. We can check progress during the wait time of earlier demo steps.
+Check the logs and review the generated `src/app-api` project, including `Program.cs`. We can check progress during the wait time of earlier demo steps.
 
 ```bash
 cd src/app-api
 dotnet run
 ```
 
-Open `http://localhost:5151/swagger/index.html`, try the new `GET /api/episodes/search` endpoint, and confirm it returns filtered results.
+Open `http://localhost:5151/swagger/index.html`, try each endpoint including `GET /api/episodes/search`, and confirm they return the expected data.
 
 ---
 
@@ -549,7 +587,7 @@ We used Spec-Kit and GitHub Copilot to:
 
 1. **Set up** the spec-kit scaffolding and project constitution.
 2. **Understood** a complete, existing spec (`001-bicep-deploy`) by reading every artifact.
-3. **Built** a frontend search feature step-by-step - specify → clarify → checklist → plan → tasks → analyze → implement.
+3. **Built** the frontend app from scratch, including a search feature, step-by-step - specify → clarify → checklist → plan → tasks → analyze → implement.
 4. **Speed-ran** the same workflow for the matching backend API endpoint.
 5. **Connected** the frontend to the API so search runs server-side, all under the same `004-text-search` spec.
 
