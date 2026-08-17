@@ -538,6 +538,9 @@ In a separate checkout, create a local branch in VS Code, call it `004-text-sear
 ```
 Please run below steps one by one, and provide response automatically. Don't overthink, make sure each step finishes promptly!
 
+Step 0:
+/speckit.git.feature 004-text-search
+
 Step 1:
 /speckit.specify
 
@@ -548,7 +551,6 @@ Connect the Sample App frontend search box to the backend text search endpoint.
 - A search term with no `*` wildcard falls back to a plain case-insensitive substring match, same as before.
 - Requests are debounced so typing does not fire one request per keystroke.
 - An empty search term returns all episodes.
-- The no-results state and friendly message from Part 3 still work.
 
 Step 2:
 /speckit.clarify
