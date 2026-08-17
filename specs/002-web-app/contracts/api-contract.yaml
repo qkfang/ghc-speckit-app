@@ -1,0 +1,188 @@
+openapi: 3.1.0
+info:
+  title: Sample App Frontend Data Contract
+  version: 1.0.0
+  description: >-
+    Read-only endpoints expected by feature 002-web-app. The API implementation
+    is intentionally deferred to a future feature. Production deployments must
+    use HTTPS and, when hosted on another origin, allow the frontend origin.
+servers:
+  - url: "{apiBaseUrl}"
+    description: Configured API origin; use the frontend origin when omitted.
+    variables:
+      apiBaseUrl:
+        default: http://localhost:5000
+tags:
+  - name: System
+  - name: Content
+paths:
+  /api/status:
+    get:
+      operationId: getStatus
+      summary: Get API runtime status
+      tags: [System]
+      responses:
+        "200":
+          description: API is running and content requests may proceed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusResponse"
+              examples:
+                running:
+                  value:
+                    status: running
+                    environment: Development
+                    timestamp: "2026-08-17T10:00:00Z"
+        default:
+          $ref: "#/components/responses/ServiceError"
+  /api/series:
+    get:
+      operationId: getSeries
+      summary: Get featured series information
+      tags: [Content]
+      responses:
+        "200":
+          description: Featured series information.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesResponse"
+              examples:
+                sampleSeries:
+                  value:
+                    name: Microsoft Sample App
+                    season: 4
+                    description: Hands-on developer sessions.
+        default:
+          $ref: "#/components/responses/ServiceError"
+  /api/episodes:
+    get:
+      operationId: getEpisodes
+      summary: Get all episodes for the featured series
+      tags: [Content]
+      responses:
+        "200":
+          description: Episode collection; the episodes array may be empty.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EpisodesResponse"
+              examples:
+                populated:
+                  value:
+                    season: 4
+                    name: Microsoft Sample App - Season 4
+                    episodes:
+                      - season: 4
+                        episode: 1
+                        title: Getting Started
+                        presenter: Rakesh L
+                        status: available
+                empty:
+                  value:
+                    season: 4
+                    name: Microsoft Sample App - Season 4
+                    episodes: []
+        default:
+          $ref: "#/components/responses/ServiceError"
+components:
+  responses:
+    ServiceError:
+      description: The service could not fulfill the request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  schemas:
+    StatusResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          const: running
+        environment:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        speckit:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    SeriesResponse:
+      type: object
+      required: [name, season]
+      properties:
+        seriesId:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        season:
+          type: integer
+          minimum: 1
+        url:
+          type: string
+          format: uri
+        description:
+          type: string
+        topics:
+          type: array
+          items:
+            $ref: "#/components/schemas/EpisodeSummary"
+      additionalProperties: true
+    EpisodesResponse:
+      type: object
+      required: [season, name, episodes]
+      properties:
+        season:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+          minLength: 1
+        episodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Episode"
+      additionalProperties: true
+    Episode:
+      type: object
+      required: [season, episode]
+      properties:
+        season:
+          type: integer
+          minimum: 1
+        episode:
+          type: integer
+          minimum: 1
+        title:
+          type: [string, "null"]
+        presenter:
+          type: [string, "null"]
+        status:
+          type: [string, "null"]
+      additionalProperties: true
+    EpisodeSummary:
+      type: object
+      required: [episode]
+      properties:
+        episode:
+          type: integer
+          minimum: 1
+        title:
+          type: [string, "null"]
+        presenter:
+          type: [string, "null"]
+        status:
+          type: [string, "null"]
+      additionalProperties: true
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      additionalProperties: true
