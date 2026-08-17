@@ -109,14 +109,14 @@ app.MapGet("/api/episodes/{id:int}", (int id) =>
 .WithDescription("Returns a single episode by its episode number.")
 .WithTags("Content");
 
-// GET /api/episodes/search — keyword search across title and introduction
-app.MapGet("/api/episodes/search", (string? q) =>
+// GET /api/episodes/search — keyword and wildcard (*term*, term*, *term) search across title and introduction
+app.MapGet("/api/episodes/search", (string? query) =>
 {
-    var matches = string.IsNullOrEmpty(q)
+    var matches = string.IsNullOrWhiteSpace(query)
         ? season4Episodes
         : season4Episodes.Where(e =>
-            e.GetProperty("title").GetString()!.Contains(q, StringComparison.OrdinalIgnoreCase) ||
-            e.GetProperty("introduction").GetString()!.Contains(q, StringComparison.OrdinalIgnoreCase)).ToArray();
+            MatchesSearchTerm(e.GetProperty("title").GetString()!, query) ||
+            MatchesSearchTerm(e.GetProperty("introduction").GetString()!, query)).ToArray();
 
     return Results.Ok(new
     {
@@ -127,9 +127,44 @@ app.MapGet("/api/episodes/search", (string? q) =>
 })
 .WithName("SearchEpisodes")
 .WithSummary("Search episodes")
-.WithDescription("Searches episodes by keyword against title or introduction, case-insensitively.")
+.WithDescription("Searches episodes by keyword or wildcard (*term*, term*, *term) against title or introduction, case-insensitively.")
 .WithTags("Content");
 
 app.Run();
+
+// Matches text against a search term: *term* contains, term* starts-with, *term ends-with, else literal substring.
+static bool MatchesSearchTerm(string text, string term)
+{
+    if (string.IsNullOrWhiteSpace(term) || term == "*")
+    {
+        return true;
+    }
+
+    var leading = term.StartsWith('*');
+    var trailing = term.EndsWith('*');
+    var core = term.Trim('*');
+
+    if (core.Contains('*'))
+    {
+        return text.Contains(term, StringComparison.OrdinalIgnoreCase);
+    }
+
+    if (leading && trailing)
+    {
+        return text.Contains(core, StringComparison.OrdinalIgnoreCase);
+    }
+
+    if (trailing)
+    {
+        return text.StartsWith(core, StringComparison.OrdinalIgnoreCase);
+    }
+
+    if (leading)
+    {
+        return text.EndsWith(core, StringComparison.OrdinalIgnoreCase);
+    }
+
+    return text.Contains(term, StringComparison.OrdinalIgnoreCase);
+}
 
 public partial class Program { }

@@ -78,6 +78,8 @@ async function fetchJson(path, signal) {
 function App() {
   const [remoteState, setRemoteState] = useState({ kind: 'loading' })
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
+  const [searchState, setSearchState] = useState(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -115,27 +117,53 @@ function App() {
     return () => controller.abort()
   }, [])
 
-  const normalizedSearchTerm = searchTerm.trim().toLowerCase()
-  const visibleEpisodes =
-    remoteState.kind === 'ready'
-      ? remoteState.episodes.filter((episode) => {
-          if (!normalizedSearchTerm) {
-            return true
-          }
+  // Debounce the raw search box value so continuous typing doesn't fire a request per keystroke.
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 300)
 
-          const title = isNonEmptyString(episode.title)
-            ? episode.title.toLowerCase()
-            : ''
-          const presenter = isNonEmptyString(episode.presenter)
-            ? episode.presenter.toLowerCase()
-            : ''
+    return () => clearTimeout(timeoutId)
+  }, [searchTerm])
 
-          return (
-            title.includes(normalizedSearchTerm) ||
-            presenter.includes(normalizedSearchTerm)
-          )
+  useEffect(() => {
+    if (remoteState.kind !== 'ready') {
+      return undefined
+    }
+
+    const controller = new AbortController()
+
+    async function runSearch() {
+      try {
+        const query = encodeURIComponent(debouncedSearchTerm.trim())
+        const result = await fetchJson(
+          `/api/episodes/search?query=${query}`,
+          controller.signal,
+        )
+        setSearchState({
+          kind: 'ready',
+          episodes: Array.isArray(result.episodes) ? result.episodes : [],
         })
-      : []
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          setSearchState({ kind: 'error' })
+        }
+      }
+    }
+
+    runSearch()
+
+    // Abort this request if a newer search starts before it resolves.
+    return () => controller.abort()
+  }, [remoteState.kind, debouncedSearchTerm])
+
+  const catalogIsEmpty = remoteState.kind === 'ready' && remoteState.episodes.length === 0
+  const visibleEpisodes =
+    searchState?.kind === 'ready'
+      ? searchState.episodes
+      : remoteState.kind === 'ready'
+        ? remoteState.episodes
+        : []
 
   return (
     <div className="app-shell">
@@ -213,7 +241,7 @@ function App() {
                     type="search"
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
-                    placeholder="Title or presenter"
+                    placeholder="Title or description (supports * wildcards)"
                     autoComplete="off"
                     aria-controls="episode-results"
                   />
@@ -221,17 +249,19 @@ function App() {
               </div>
 
               <div id="episode-results">
-                <p
-                  className="result-count"
-                  role="status"
-                  aria-live="polite"
-                  aria-atomic="true"
-                >
-                  {visibleEpisodes.length}{' '}
-                  {visibleEpisodes.length === 1 ? 'episode' : 'episodes'}
-                </p>
+                {!catalogIsEmpty && searchState?.kind !== 'error' && (
+                  <p
+                    className="result-count"
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                  >
+                    {visibleEpisodes.length}{' '}
+                    {visibleEpisodes.length === 1 ? 'episode' : 'episodes'}
+                  </p>
+                )}
 
-                {remoteState.episodes.length === 0 && (
+                {catalogIsEmpty && (
                   <div
                     className="empty-state"
                     role="status"
@@ -243,7 +273,15 @@ function App() {
                   </div>
                 )}
 
-                {remoteState.episodes.length > 0 &&
+                {!catalogIsEmpty && searchState?.kind === 'error' && (
+                  <div className="search-error-state" role="alert">
+                    <h3>Search is unavailable</h3>
+                    <p>We could not complete that search right now. Please try again.</p>
+                  </div>
+                )}
+
+                {!catalogIsEmpty &&
+                  searchState?.kind !== 'error' &&
                   visibleEpisodes.length === 0 && (
                     <div
                       className="no-match-state"
@@ -252,11 +290,13 @@ function App() {
                       aria-atomic="true"
                     >
                       <h3>No episodes match your search</h3>
-                      <p>Try another title or presenter, or clear the search.</p>
+                      <p>Try another title or description, or clear the search.</p>
                     </div>
                   )}
 
-                {visibleEpisodes.length > 0 && (
+                {!catalogIsEmpty &&
+                  searchState?.kind !== 'error' &&
+                  visibleEpisodes.length > 0 && (
                   <ul className="episode-grid">
                     {visibleEpisodes.map((episode) => (
                       <li key={`${episode.season}:${episode.episode}`}>
