@@ -1,6 +1,6 @@
 # Quickstart: Sample App Backend API
 
-**Feature**: `002-sample-app-api` | **Date**: 2026-08-17
+**Feature**: `002-app-api` | **Date**: 2026-08-17
 
 Get the API running locally and exercise every endpoint in a few minutes.
 

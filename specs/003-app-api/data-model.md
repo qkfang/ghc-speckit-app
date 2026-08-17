@@ -1,6 +1,6 @@
 # Data Model: Sample App Backend API
 
-**Branch**: `002-sample-app-api` | **Date**: 2026-08-17
+**Branch**: `002-app-api` | **Date**: 2026-08-17
 
 Both entities are sourced from a single bundled `episodes.json` file and held in memory for the lifetime of the process. There is no persistence layer and no write path — all data is read-only for this feature.
 

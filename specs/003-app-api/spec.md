@@ -1,5 +1,5 @@
 ---
-feature: 002-sample-app-api
+feature: 002-app-api
 risk: low
 breaking: false
 reviewer-team: spec-reviewer
@@ -7,7 +7,7 @@ reviewer-team: spec-reviewer
 
 # Feature Specification: Sample App Backend API
 
-**Feature Branch**: `002-sample-app-api`
+**Feature Branch**: `002-app-api`
 **Created**: 2026-08-17
 **Status**: Draft
 **Input**: User description: "Build the Sample App backend API from scratch in `src/app-api`. New endpoints for status, health, series info, episode listing, episode detail, and episode search. Data comes from a local file. Must be callable from the frontend on http://localhost:5173. Must have interactive API docs."

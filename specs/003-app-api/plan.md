@@ -1,7 +1,7 @@
 # Implementation Plan: Sample App Backend API
 
-**Branch**: `002-sample-app-api` | **Date**: 2026-08-17 | **Spec**: [spec.md](./spec.md)
-**Input**: Feature specification from `/specs/002-sample-app-api/spec.md`
+**Branch**: `002-app-api` | **Date**: 2026-08-17 | **Spec**: [spec.md](./spec.md)
+**Input**: Feature specification from `/specs/002-app-api/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 
@@ -30,7 +30,7 @@ Build a single-file ASP.NET Core minimal API (`src/app-api/Program.cs`, net10.0)
 | 1. Security-First | Inputs validated at the boundary; no plain-HTTP in prod; no secrets in source | ✅ PASS | Episode id uses the `{id:int}` route constraint so non-numeric input never reaches the handler; `UseHttpsRedirection()` stays enabled; CORS uses an explicit allow-list (`WithOrigins`), never `AllowAnyOrigin` |
 | 2. Cloud-Native | IaC via Bicep; tagged resources | ✅ PASS (N/A new infra) | Deploys into the existing App Service (Linux) from feature `001-bicep-deploy`; this feature adds no new Azure resources |
 | 3. CI/CD-Driven | Automated build/deploy on merge to `main` | ✅ PASS | Built and deployed by the existing/forthcoming API deploy workflow referenced in `AGENTS.md`; no manual steps |
-| 4. Spec-Gated | `spec.md` exists under `specs/<feature-id>/` | ✅ PASS | This plan is generated from `specs/002-sample-app-api/spec.md` |
+| 4. Spec-Gated | `spec.md` exists under `specs/<feature-id>/` | ✅ PASS | This plan is generated from `specs/002-app-api/spec.md` |
 | 5. Simplicity | Standard libraries preferred; avoid over-engineering | ✅ PASS | Single `Program.cs`, minimal APIs, no repository/service layers, no DB, one extra NuGet package (`Swashbuckle.AspNetCore`) |
 | 6. Tested | API routes must have unit/integration tests | ✅ PASS (planned) | `tests/app-api.Tests` covers each acceptance scenario (episode list, episode by id incl. not-found, search incl. case-insensitivity/no-match, series/status/health) via `WebApplicationFactory` |
 
@@ -41,7 +41,7 @@ No violations — Complexity Tracking table intentionally left empty.
 ### Documentation (this feature)
 
 ```text
-specs/002-sample-app-api/
+specs/002-app-api/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)

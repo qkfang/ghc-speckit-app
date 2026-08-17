@@ -1,6 +1,6 @@
 # API Contract: Sample App Backend API
 
-**Feature**: `002-sample-app-api` | **File**: `src/app-api/Program.cs` | **Date**: 2026-08-17
+**Feature**: `002-app-api` | **File**: `src/app-api/Program.cs` | **Date**: 2026-08-17
 
 This document defines the public HTTP interface exposed by the API: every route, its parameters, response shape, and status codes. Full interactive documentation is also served at `/swagger` (Swashbuckle/OpenAPI) once the app is running.
 

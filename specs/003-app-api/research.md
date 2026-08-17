@@ -1,6 +1,6 @@
 # Research: Sample App Backend API
 
-**Branch**: `002-sample-app-api` | **Date**: 2026-08-17
+**Branch**: `002-app-api` | **Date**: 2026-08-17
 
 All open questions from the spec were already resolved during `/speckit.clarify` (see `spec.md` → Clarifications). This document records the rationale for those decisions plus the remaining implementation-level choices needed to start building. No `NEEDS CLARIFICATION` markers remain.
 

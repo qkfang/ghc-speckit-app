@@ -5,7 +5,7 @@ description: "Task list for Sample App Backend API"
 
 # Tasks: Sample App Backend API
 
-**Input**: Design documents from `/specs/002-sample-app-api/`
+**Input**: Design documents from `/specs/002-app-api/`
 **Prerequisites**: [plan.md](./plan.md), [spec.md](./spec.md), [research.md](./research.md), [data-model.md](./data-model.md), [contracts/api-contract.md](./contracts/api-contract.md), [quickstart.md](./quickstart.md)
 
 **Tests**: Included — the constitution's "Tested" gate (Principle 6) and plan.md require a `tests/app-api.Tests` xUnit project covering every endpoint.
